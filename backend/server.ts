@@ -1,7 +1,9 @@
 import main from "./src/main.ts";
 
-main()
-  .catch((error) => {
-    console.error(error);
-    Deno.exit(1);
-  });
+try {
+  const kv = await Deno.openKv();
+  await main(kv);
+} catch (error) {
+  console.error(error);
+  Deno.exit(1);
+}
