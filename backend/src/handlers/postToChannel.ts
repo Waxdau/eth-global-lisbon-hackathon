@@ -15,6 +15,7 @@ export default async function postToChannel(
     const [, , n] = entry.key;
     assert(typeof n === "number");
     last = n;
+    break;
   }
 
   if (last === nil) {
