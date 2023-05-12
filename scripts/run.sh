@@ -11,7 +11,9 @@ function cleanup {
 trap cleanup EXIT
 
 echo "starting hardhat node..."
-cd ./bundler && yarn hardhat-node & && cd ..
+cd ./bundler
+yarn hardhat-node &
+cd ..
 
 "${SCRIPT_DIR}/wait-for-rpc.sh"
 
@@ -22,6 +24,7 @@ echo "deploying entrypoint..."
 
 # TODO record entrypoint address
 
+# TODO Is this needed? Looks like factory is deployed with entrypoint
 echo "deploying factory..."
 (cd ./trampoline && npx hardhat deploy --network localhost)
 
@@ -34,9 +37,13 @@ echo "deploying factory..."
 #   c. Make sure your mnemonic & beneficiary are setup correctly.
 
 echo "starting bundler..."
-cd ./bundler && yarn bundler --unsafe --auto & && cd..
+cd ./bundler
+yarn bundler --unsafe --auto &
+cd ..
 
 echo "starting trampoline..."
-cd ./trampoline && yarn start & && cd ..
+cd ./trampoline
+yarn start &
+cd ..
 
 fg
