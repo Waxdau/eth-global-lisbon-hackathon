@@ -2,7 +2,19 @@
 
 set -e
 
+# git submodules
+echo "init git submodules"
 git submodule init && git submodule update
 
-# setup tramonline
-(cd ./trampoline && yarn install)
+# account-abstraction
+echo "setting up account-abstraction..."
+(cd ./account-abstraction && yarn)
+
+# bundler
+echo "setting up bundler..."
+(cd ./bundler && yarn && yarn preprocess)
+
+# trampoline
+echo "setting up trampoline..."
+(cd ./trampoline && yarn)
+
