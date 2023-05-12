@@ -1,5 +1,6 @@
 import { serve } from "../deps.ts";
 import createChannel from "./handlers/createChannel.ts";
+import postToChannel from "./handlers/postToChannel.ts";
 import readChannel from "./handlers/readChannel.ts";
 import assert from "./helpers/assert.ts";
 import json from "./json.ts";
@@ -39,6 +40,17 @@ export default async function main(kv: Deno.Kv) {
         }
 
         return await readChannel(kv, id, start);
+      }
+
+      if (
+        url.pathname.startsWith("/channel/") && parts.length === 3 &&
+        req.method === "POST"
+      ) {
+        const id = parts[2];
+
+        const message = await req.json();
+
+        return await postToChannel(kv, id, message);
       }
 
       return json(404, "Not found");
