@@ -1,3 +1,4 @@
+import WagmiProvider from "@/utils/WagmiProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -15,10 +16,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <nav className="m-4">ETH Global Lisbon Hackathon</nav>
-        <main>{children}</main>
-      </body>
+      <WagmiProvider>
+        <body className={inter.className}>
+          <nav className="m-4">ETH Global Lisbon Hackathon</nav>
+          <main>{children}</main>
+        </body>
+      </WagmiProvider>
     </html>
   );
 }

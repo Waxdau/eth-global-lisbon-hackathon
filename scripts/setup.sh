@@ -15,8 +15,8 @@ echo "setting up bundler..."
 (cd ./bundler && yarn && yarn preprocess)
 
 # trampoline
-echo "setting up trampoline..."
-(cd ./trampoline && yarn)
+# echo "setting up trampoline..."
+# (cd ./trampoline && yarn)
 
 # setup frontend
 (cd ./frontend && yarn install)

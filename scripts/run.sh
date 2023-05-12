@@ -25,8 +25,8 @@ echo "deploying entrypoint..."
 # TODO record entrypoint address
 
 # TODO Is this needed? Looks like factory is deployed with entrypoint
-echo "deploying factory..."
-(cd ./trampoline && npx hardhat deploy --network localhost)
+# echo "deploying factory..."
+# (cd ./trampoline && npx hardhat deploy --network localhost)
 
 # TODO record factory address
 
@@ -41,9 +41,9 @@ cd ./bundler
 yarn bundler --unsafe --auto &
 cd ..
 
-echo "starting trampoline..."
-cd ./trampoline
-yarn start &
-cd ..
+# echo "starting trampoline..."
+# cd ./trampoline
+# yarn start &
+# cd ..
 
 fg
