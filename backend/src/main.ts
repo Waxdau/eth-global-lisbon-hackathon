@@ -1,13 +1,9 @@
 import { serve } from "../deps.ts";
 import createChannel from "./handlers/createChannel.ts";
+import readChannel from "./handlers/readChannel.ts";
+import assert from "./helpers/assert.ts";
 import json from "./json.ts";
 import nil from "./nil.ts";
-
-/*
-  POST /channel -> id
-  GET /channel/{id}?from=seq
-  POST /channel/{id}
-*/
 
 export default async function main(kv: Deno.Kv) {
   await serve(
@@ -21,9 +17,28 @@ export default async function main(kv: Deno.Kv) {
       }
 
       const url = new URL(req.url);
+      const parts = url.pathname.split("/");
 
       if (url.pathname === "/channel" && req.method === "POST") {
         return await createChannel(kv);
+      }
+
+      if (
+        url.pathname.startsWith("/channel/") && parts.length === 3 &&
+        req.method === "GET"
+      ) {
+        const id = parts[2];
+
+        let start: number | nil = nil;
+        const startParam = url.searchParams.get("start");
+
+        if (typeof startParam === "string") {
+          const parsed = JSON.parse(startParam) as unknown;
+          assert(typeof parsed === "number");
+          start = parsed;
+        }
+
+        return await readChannel(kv, id, start);
       }
 
       return json(404, "Not found");
