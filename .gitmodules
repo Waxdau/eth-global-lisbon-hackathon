@@ -1,0 +1,6 @@
+[submodule "account-abstraction"]
+	path = account-abstraction
+	url = git@github.com:eth-infinitism/account-abstraction.git
+[submodule "bundler"]
+	path = bundler
+	url = git@github.com:eth-infinitism/bundler.git
