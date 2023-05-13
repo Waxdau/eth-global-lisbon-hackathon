@@ -19,4 +19,5 @@ echo "setting up bundler..."
 # (cd ./trampoline && yarn)
 
 # setup frontend
+echo "setting up frontend..."
 (cd ./frontend && yarn install)

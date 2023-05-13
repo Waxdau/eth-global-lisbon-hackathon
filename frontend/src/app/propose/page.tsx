@@ -3,12 +3,19 @@ export default function Page() {
     <form>
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">Propose Transaction</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">This transaction will be proposed to the group</p>
+          <h2 className="text-base font-semibold leading-7 text-white">
+            Propose Transaction
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-gray-400">
+            This transaction will be proposed to the group
+          </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <label htmlFor="address" className="block text-sm font-medium leading-6 text-white">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium leading-6 text-white"
+              >
                 Address:
               </label>
               <div className="mt-2">
@@ -22,7 +29,10 @@ export default function Page() {
               </div>
             </div>
             <div className="sm:col-span-4">
-              <label htmlFor="amount" className="block text-sm font-medium leading-6 text-white">
+              <label
+                htmlFor="amount"
+                className="block text-sm font-medium leading-6 text-white"
+              >
                 Amount:
               </label>
               <div className="mt-2">
@@ -37,7 +47,10 @@ export default function Page() {
             </div>
 
             <div className="sm:col-span-3">
-              <label htmlFor="signature" className="block text-sm font-medium leading-6 text-white">
+              <label
+                htmlFor="signature"
+                className="block text-sm font-medium leading-6 text-white"
+              >
                 Dummy drop down
               </label>
               <div className="mt-2">
@@ -57,7 +70,10 @@ export default function Page() {
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button type="button" className="text-sm font-semibold leading-6 text-white">
+        <button
+          type="button"
+          className="text-sm font-semibold leading-6 text-white"
+        >
           Cancel
         </button>
         <button
@@ -68,5 +84,5 @@ export default function Page() {
         </button>
       </div>
     </form>
-  )
+  );
 }
