@@ -13,11 +13,13 @@ export default function Transaction({
   to,
   amount,
   description,
+  numSigned,
 }: {
   token: string;
   to: string;
   amount: string;
   description: string;
+  numSigned: number;
 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -53,7 +55,7 @@ export default function Transaction({
                 'rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset',
               )}
             >
-              1/5 signed
+              {numSigned}/5 signed
             </div>
           </dd>
         </div>
