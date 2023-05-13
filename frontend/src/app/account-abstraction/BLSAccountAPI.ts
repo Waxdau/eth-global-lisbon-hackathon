@@ -1,23 +1,23 @@
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish, utils } from 'ethers'
 import {
   SimpleAccount,
   SimpleAccount__factory, SimpleAccountFactory,
   SimpleAccountFactory__factory
 } from '@account-abstraction/contracts';
+import { signer } from "@thehubbleproject/bls";
 
 import { arrayify, hexConcat } from 'ethers/lib/utils';
-import { Signer } from '@ethersproject/abstract-signer';
 import { BaseAccountAPI } from '@account-abstraction/sdk';
 import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
 
 /**
  * constructor params, added no top of base params:
- * @param owner the signer object for the account owner
+ * @param owner the bls signer object for the account owner
  * @param factoryAddress address of contract "factory" to deploy new contracts (not needed if account already deployed)
  * @param index nonce value used when creating multiple accounts for the same owner
  */
 export interface BLSAccountApiParams extends BaseApiParams {
-  owner: Signer
+  blsSigner: signer.BlsSignerInterface
   factoryAddress?: string
   index?: BigNumberish
 
@@ -32,7 +32,7 @@ export interface BLSAccountApiParams extends BaseApiParams {
  */
 export class BLSAccountAPI extends BaseAccountAPI {
   factoryAddress?: string
-  owner: Signer
+  blsSigner: signer.BlsSignerInterface
   index: BigNumberish
 
   /**
@@ -48,7 +48,7 @@ export class BLSAccountAPI extends BaseAccountAPI {
   constructor (params: BLSAccountApiParams) {
     super(params)
     this.factoryAddress = params.factoryAddress
-    this.owner = params.owner
+    this.blsSigner = params.blsSigner
     this.index = BigNumber.from(params.index ?? 0)
   }
 
@@ -71,9 +71,10 @@ export class BLSAccountAPI extends BaseAccountAPI {
         throw new Error('no factory to get initCode')
       }
     }
+    const todoAddress = "TODO need address/other data for init code";
     return hexConcat([
       this.factory.address,
-      this.factory.interface.encodeFunctionData('createAccount', [await this.owner.getAddress(), this.index])
+      this.factory.interface.encodeFunctionData('createAccount', [todoAddress, this.index])
     ])
   }
 
@@ -103,6 +104,13 @@ export class BLSAccountAPI extends BaseAccountAPI {
   }
 
   async signUserOpHash (userOpHash: string): Promise<string> {
-    return await this.owner.signMessage(arrayify(userOpHash))
+    const msg = Buffer.from(arrayify(userOpHash)).toString("hex");
+    const solG1Sig = this.blsSigner.sign(msg);
+
+    const sigType = 0;
+    return utils.defaultAbiCoder.encode(
+      ["byte", "uint256[2]"],
+      [sigType, solG1Sig]
+    );
   }
 }
