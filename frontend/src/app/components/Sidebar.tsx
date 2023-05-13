@@ -161,7 +161,7 @@ export default function SideBar() {
         </div>
       </div>
 
-      <div className="sticky top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
+      <div className="sticky w-14 top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
         <button
           type="button"
           className="-m-2.5 p-2.5 text-gray-400 lg:hidden"
@@ -172,7 +172,7 @@ export default function SideBar() {
         </button>
       </div>
 
-      <main className="py-10 lg:pl-72">
+      <main className="py-10 pl-40 lg:pl-72">
         <div className="px-4 sm:px-6 lg:px-8">{/* Your content */}</div>
       </main>
     </div>
