@@ -163,7 +163,7 @@ export default function SideBar() {
         </div>
       </div>
 
-      <div className="sticky w-14 top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
+      <div className="sticky w-13 top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
         <button
           type="button"
           className="-m-2.5 p-2.5 text-gray-400 lg:hidden"
