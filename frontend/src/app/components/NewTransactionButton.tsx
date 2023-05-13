@@ -1,4 +1,3 @@
-'use client';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
 import { ethers } from 'ethers';
 

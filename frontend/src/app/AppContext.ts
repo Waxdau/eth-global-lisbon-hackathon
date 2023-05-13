@@ -1,5 +1,3 @@
-'use client';
-
 import { once } from '@s-libs/micro-dash';
 import { signer } from '@thehubbleproject/bls';
 import blsDomain from './blsDomain';

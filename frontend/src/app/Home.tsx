@@ -1,5 +1,3 @@
-'use client';
-
 import NewTransactionButton from './components/NewTransactionButton';
 import './debug';
 import CreateWalletForm from './components/CreateWalletForm';
