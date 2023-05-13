@@ -18,9 +18,9 @@ import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
  * @param index nonce value used when creating multiple accounts for the same owner
  */
 export interface AccountApiParams extends BaseApiParams {
-  owner: Signer
-  factoryAddress?: string
-  index?: BigNumberish
+  owner: Signer;
+  factoryAddress?: string;
+  index?: BigNumberish;
 }
 
 /**
@@ -43,7 +43,7 @@ export class AccountAPI extends BaseAccountAPI {
 
   factory?: SimpleAccountFactory;
 
-  constructor (params: AccountApiParams) {
+  constructor(params: AccountApiParams) {
     super(params);
     this.factoryAddress = params.factoryAddress;
     this.owner = params.owner;
