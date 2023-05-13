@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { wrapProvider } from './account/wrapProvider';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
 import makeId from './utils/makeId';
-import TestToken from './ERC20/TestToken.json';
+// import TestToken from './ERC20/TestToken.json';
 import { ExtendedECDSASigner } from './account/ExtendedECDSASigner';
 
 // aaProvider!.smartAccountAPI.getUserOpHash()
@@ -121,7 +121,8 @@ export default class AppContext {
     return {
       sender: this.address,
       nonce: '0x00', // TODO: nonce
-      token: TestToken.address, // TODO: token
+      // token: TestToken.address, // TODO: token
+      token: '0x01',
       ...simplePayment,
     };
   }

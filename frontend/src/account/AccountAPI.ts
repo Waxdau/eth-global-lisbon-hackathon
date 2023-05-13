@@ -1,9 +1,9 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import {
-  GnosisSafeProxy,
-  GnosisSafeProxy__factory,
-  GnosisSafeAccountFactory,
-  GnosisSafeAccountFactory__factory,
+  SafeProxy,
+  SafeProxy__factory,
+  SafeAccountFactory,
+  SafeAccountFactory__factory,
   EIP4337Manager,
   EIP4337Manager__factory,
   UserOperationStruct,
@@ -23,13 +23,13 @@ import { TransactionDetailsForUserOp } from '@account-abstraction/sdk/src/Transa
  */
 export interface AccountApiParams extends BaseApiParams {
   eip4337ManagerAddress: string;
-  gnosisSafeAccountFactoryAddress: string;
+  safeAccountFactoryAddress: string;
   owner: Signer;
   index?: BigNumberish;
 }
 
 /**
- * An implementation of the BaseAccountAPI using the Gnosis Safe contracts.
+ * An implementation of the BaseAccountAPI using the Safe contracts.
  * - contract deployer gets "entrypoint", "owner" addresses and "index" nonce
  * - owner signs requests using normal "Ethereum Signed Message" (ether's signer.signMessage())
  * - nonce method is "nonce()"
@@ -37,7 +37,7 @@ export interface AccountApiParams extends BaseApiParams {
  */
 export class AccountAPI extends BaseAccountAPI {
   eip4337Manager: EIP4337Manager;
-  gnosisSafeAccountFactory: GnosisSafeAccountFactory;
+  safeAccountFactory: SafeAccountFactory;
   owner: Signer;
   index: BigNumberish;
 
@@ -45,7 +45,7 @@ export class AccountAPI extends BaseAccountAPI {
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
    */
-  accountContract?: GnosisSafeProxy;
+  accountContract?: SafeProxy;
 
   constructor(params: AccountApiParams) {
     super(params);
@@ -56,15 +56,15 @@ export class AccountAPI extends BaseAccountAPI {
       params.eip4337ManagerAddress,
       this.provider,
     );
-    this.gnosisSafeAccountFactory = GnosisSafeAccountFactory__factory.connect(
-      params.gnosisSafeAccountFactoryAddress,
+    this.safeAccountFactory = SafeAccountFactory__factory.connect(
+      params.safeAccountFactoryAddress,
       this.provider,
     );
   }
 
-  async _getAccountContract(): Promise<GnosisSafeProxy> {
+  async _getAccountContract(): Promise<SafeProxy> {
     if (this.accountContract == null) {
-      this.accountContract = GnosisSafeProxy__factory.connect(
+      this.accountContract = SafeProxy__factory.connect(
         await this.getAccountAddress(),
         this.provider,
       );
@@ -78,11 +78,11 @@ export class AccountAPI extends BaseAccountAPI {
    */
   async getAccountInitCode(): Promise<string> {
     return hexConcat([
-      this.gnosisSafeAccountFactory.address,
-      this.gnosisSafeAccountFactory.interface.encodeFunctionData(
-        'createAccount',
-        [await this.owner.getAddress(), this.index],
-      ),
+      this.safeAccountFactory.address,
+      this.safeAccountFactory.interface.encodeFunctionData('createAccount', [
+        await this.owner.getAddress(),
+        this.index,
+      ]),
     ]);
   }
 

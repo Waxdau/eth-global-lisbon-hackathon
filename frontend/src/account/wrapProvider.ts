@@ -2,9 +2,9 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   EntryPoint__factory,
   EIP4337Manager__factory,
-  GnosisSafe__factory,
-  GnosisSafeProxyFactory__factory,
-  GnosisSafeAccountFactory__factory,
+  Safe__factory,
+  SafeProxyFactory__factory,
+  SafeAccountFactory__factory,
 } from 'account-abstraction';
 import {
   ClientConfig,
@@ -41,17 +41,17 @@ export async function wrapProvider(
     [entryPoint.address],
   );
   const safeSingletonAddress = await detDeployer.deterministicDeploy(
-    new GnosisSafe__factory(),
+    new Safe__factory(),
     0,
     [],
   );
   const proxyFactoryAddress = await detDeployer.deterministicDeploy(
-    new GnosisSafeProxyFactory__factory(),
+    new SafeProxyFactory__factory(),
     0,
     [],
   );
-  const gnosisSafeAccountFactoryAddress = await detDeployer.deterministicDeploy(
-    new GnosisSafeAccountFactory__factory(),
+  const safeAccountFactoryAddress = await detDeployer.deterministicDeploy(
+    new SafeAccountFactory__factory(),
     0,
     [proxyFactoryAddress, safeSingletonAddress, eip4337ManagerAddress],
   );
@@ -61,7 +61,7 @@ export async function wrapProvider(
     entryPointAddress: entryPoint.address,
     owner: originalSigner,
     eip4337ManagerAddress,
-    gnosisSafeAccountFactoryAddress,
+    safeAccountFactoryAddress,
     paymasterAPI: config.paymasterAPI,
   });
   debug('config=', config);
