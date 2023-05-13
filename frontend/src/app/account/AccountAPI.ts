@@ -17,7 +17,7 @@ import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
  * @param factoryAddress address of contract "factory" to deploy new contracts (not needed if account already deployed)
  * @param index nonce value used when creating multiple accounts for the same owner
  */
-export interface SimpleAccountApiParams extends BaseApiParams {
+export interface AccountApiParams extends BaseApiParams {
   owner: Signer;
   factoryAddress?: string;
   index?: BigNumberish;
@@ -43,7 +43,7 @@ export class AccountAPI extends BaseAccountAPI {
 
   factory?: SimpleAccountFactory;
 
-  constructor(params: SimpleAccountApiParams) {
+  constructor(params: AccountApiParams) {
     super(params);
     this.factoryAddress = params.factoryAddress;
     this.owner = params.owner;

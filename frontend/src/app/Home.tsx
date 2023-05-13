@@ -21,7 +21,7 @@ export default function Home() {
           {/* {hhBalance ? ethers.utils.formatEther(hhBalance) : 0} */}
         </p>
         <button
-          onClick={appContext?.fundWallet}
+          onClick={() => appContext?.fundWallet()}
           className="p-2 rounded-lg bg-green-500"
         >
           Fund AA wallet
