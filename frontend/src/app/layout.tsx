@@ -1,3 +1,4 @@
+import SideBar from './components/Sidebar';
 import './globals.css';
 import { Inter } from 'next/font/google';
 
@@ -14,8 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className} suppressHydrationWarning>
+    <html lang="en" className="h-full">
+      <body
+        className={`${inter.className} flex flex-row h-full text-white`}
+        suppressHydrationWarning
+      >
+        <SideBar />
         <main>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}

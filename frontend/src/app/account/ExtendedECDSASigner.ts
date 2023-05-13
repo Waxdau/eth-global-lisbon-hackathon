@@ -1,10 +1,11 @@
 import { TransactionRequest, Provider } from "@ethersproject/abstract-provider";
 import { SigningKey } from "@ethersproject/signing-key";
 import { Bytes, Signer } from "ethers";
-import { Deferrable, hashMessage, joinSignature } from "ethers/lib/utils";
+import { Deferrable, computeAddress, hashMessage, joinSignature } from "ethers/lib/utils";
 
 export class ExtendedECDSASigner extends Signer {
     private readonly signingKey: SigningKey;
+    public readonly address: string;
     
     constructor(
         privateKey: string,
@@ -12,6 +13,7 @@ export class ExtendedECDSASigner extends Signer {
     ) {
         super();
         this.signingKey = new SigningKey(privateKey);
+        this.address = computeAddress(this.signingKey.publicKey);
     };
      
     async signMessage(message: string | Bytes): Promise<string> {
@@ -21,12 +23,14 @@ export class ExtendedECDSASigner extends Signer {
     }
 
     async getAddress(): Promise<string> {
-        throw new Error("getAddress not implemented.");
+        return this.address;
     }
-    async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
-        throw new Error("signTransaction not implemented.");
-    }
+
     connect(provider: Provider): Signer {
         return new ExtendedECDSASigner(this.signingKey.privateKey, provider);
+    }
+
+    async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
+        throw new Error("signTransaction not implemented.");
     }
 }

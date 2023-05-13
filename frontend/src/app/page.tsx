@@ -3,7 +3,8 @@
 import NewTransactionButton from './components/NewTransactionButton';
 import { ethers, Wallet } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { wrapProvider, ERC4337EthersProvider } from '@account-abstraction/sdk';
+import { ERC4337EthersProvider } from '@account-abstraction/sdk';
+import { wrapProvider } from './account/wrapProvider';
 import './debug';
 
 const hardHatPrivateKey =
