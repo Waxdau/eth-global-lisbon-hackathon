@@ -9,20 +9,19 @@ import {
   PencilIcon,
 } from '@heroicons/react/24/outline';
 import PublicKey from './PublicKey';
+import { usePathname } from 'next/navigation';
 
 const navigation = [
-  { name: 'Create Multi-sig', href: '/', icon: WalletIcon, current: true },
+  { name: 'Create Multi-sig', href: '/', icon: WalletIcon },
   {
     name: 'Propose Transaction',
     href: '/propose',
     icon: UsersIcon,
-    current: false,
   },
   {
     name: 'Sign Transaction',
     href: '/sign',
     icon: PencilIcon,
-    current: false,
   },
 ];
 
@@ -31,6 +30,8 @@ function classNames(...classes: string[]) {
 }
 
 export default function SideBar() {
+  const pathname = usePathname();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -102,7 +103,7 @@ export default function SideBar() {
                                 <a
                                   href={item.href}
                                   className={classNames(
-                                    item.current
+                                    pathname === item.href
                                       ? 'bg-gray-800 text-white'
                                       : 'text-gray-400 hover:text-white hover:bg-gray-800',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
@@ -141,7 +142,7 @@ export default function SideBar() {
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
+                            pathname === item.href
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:text-white hover:bg-gray-800',
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
