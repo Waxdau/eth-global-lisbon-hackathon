@@ -15,8 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <nav className="m-4">ETH Global Lisbon Hackathon</nav>
+      <body className={inter.className} suppressHydrationWarning>
         <main>{children}</main>
       </body>
     </html>
