@@ -3,6 +3,10 @@ import { UserIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import AppContext from '../AppContext';
 import { ethers } from 'ethers';
 
+function formatCompactAddress(address: string): string {
+  return `0x${address.slice(2, 6)}...${address.slice(-4)}`;
+}
+
 const PublicKey = () => {
   const appContext = AppContext.use();
 
@@ -30,7 +34,7 @@ const PublicKey = () => {
 
       <div className="flex items-center my-2">
         <span className="bg-gray-800 rounded-lg px-4 py-1 mr-2 text-ellipsis">
-          {publicKey ?? 'Loading...'}
+          {publicKey ? formatCompactAddress(publicKey) : 'Loading...'}
         </span>
 
         <button onClick={copyPublicKey}>
