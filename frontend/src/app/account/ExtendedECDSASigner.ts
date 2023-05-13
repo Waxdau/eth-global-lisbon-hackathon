@@ -19,7 +19,7 @@ export class ExtendedECDSASigner extends Signer {
     async signMessage(message: string | Bytes): Promise<string> {
         const origSig = joinSignature(this.signingKey.signDigest(hashMessage(message)));
         const sigTypeByte = "01";
-        return `0x${sigTypeByte}${origSig}`;
+        return `0x${sigTypeByte}${origSig.slice(2)}`; // remove 0x
     }
 
     async getAddress(): Promise<string> {
