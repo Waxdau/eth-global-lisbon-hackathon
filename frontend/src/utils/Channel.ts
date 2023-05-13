@@ -2,6 +2,31 @@ import assert from './assert';
 
 const backendUrl = 'https://wax-ethlisbon-hackathon.deno.dev';
 
+/**
+ * Access remote channel data
+ * 
+ * Each channel is just an append-only list
+ * 
+ * Create a channel:
+ * ```ts
+ *     const channel = await Channel.create();
+ * ```
+ * 
+ * Connect an existing channel:
+ * ```ts
+ *     const channel = new Channel('e9b40m3wrt76ezv3zma6cvhq4');
+ * ```
+ * 
+ * Push data to a channel:
+ * ```ts
+ *    const index = await channel.push({ hello: 'world' });
+ * ```
+ * 
+ * Get data from a channel:
+ * ```ts
+ *   const data = await channel.get();
+ * ```
+ */
 export default class Channel {
   constructor(public id: string) {}
 
