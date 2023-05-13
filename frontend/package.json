@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "sed -i.bak '/module/d' node_modules/@ethersproject/contracts/package.json"
   },
   "dependencies": {
     "@account-abstraction/sdk": "^0.6.0",
