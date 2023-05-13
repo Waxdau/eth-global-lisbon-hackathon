@@ -1,6 +1,18 @@
-export default function Page() {
+import { FormEvent } from 'react';
+
+export default function Propose() {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const address = event.currentTarget.elements.namedItem('address');
+    const amount = event.currentTarget.elements.namedItem('amount');
+    const signature = event.currentTarget.elements.namedItem('signature');
+    console.log(address);
+    console.log(amount);
+    console.log(signature);
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-white">

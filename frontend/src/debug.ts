@@ -1,6 +1,6 @@
 import PaymentChannel from './PaymentChannel';
 import AppContext from './AppContext';
-import Channel from '../utils/Channel';
+import Channel from './utils/Channel';
 
 const globalRecord = globalThis as Record<string, unknown>;
 

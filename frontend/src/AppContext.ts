@@ -6,7 +6,7 @@ import PaymentChannel, { Payment } from './PaymentChannel';
 import { useEffect, useState } from 'react';
 import { wrapProvider } from './account/wrapProvider';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
-import makeId from '../utils/makeId';
+import makeId from './utils/makeId';
 
 // aaProvider!.smartAccountAPI.getUserOpHash()
 // encode

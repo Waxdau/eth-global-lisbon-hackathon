@@ -1,10 +1,10 @@
 import { solG1, solG2 } from '@thehubbleproject/bls/dist/mcl';
 import * as io from 'io-ts';
 import { signer } from '@thehubbleproject/bls';
-import Channel from '../utils/Channel';
-import assertType from '../utils/assertType';
+import Channel from './utils/Channel';
+import assertType from './utils/assertType';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
-import { IERC20__factory } from '../ERC20/IERC20__factory';
+import { IERC20__factory } from './ERC20/IERC20__factory';
 
 const callGasLimit = '1000000';
 const verificationGasLimit = '1000000';

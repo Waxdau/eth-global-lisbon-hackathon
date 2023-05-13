@@ -1,4 +1,4 @@
-export default function Page() {
+export default function Sign() {
   return (
     <form>
       <div className="space-y-12">

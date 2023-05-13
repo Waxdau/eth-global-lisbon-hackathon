@@ -1,12 +1,11 @@
-import NewTransactionButton from './components/NewTransactionButton';
-import './debug';
-import CreateWalletForm from './components/CreateWalletForm';
-import AppContext from './AppContext';
+import NewTransactionButton from '../components/NewTransactionButton';
+import '../debug';
+import CreateWalletForm from '../components/CreateWalletForm';
+import AppContext from '../AppContext';
 
-import './index.css';
 import { ethers } from 'ethers';
 
-export default function Home() {
+export default function Create() {
   const appContext = AppContext.use();
 
   return (
