@@ -1,9 +1,11 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import {
-  SimpleAccount,
-  SimpleAccount__factory,
-  SimpleAccountFactory,
-  SimpleAccountFactory__factory,
+  GnosisSafeProxy,
+  GnosisSafeProxy__factory,
+  GnosisSafeAccountFactory,
+  GnosisSafeAccountFactory__factory,
+  EIP4337Manager,
+  EIP4337Manager__factory,
 } from 'account-abstraction';
 
 import { arrayify, hexConcat } from 'ethers/lib/utils';
@@ -18,20 +20,22 @@ import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
  * @param index nonce value used when creating multiple accounts for the same owner
  */
 export interface AccountApiParams extends BaseApiParams {
+  eip4337ManagerAddress: string;
+  gnosisSafeAccountFactoryAddress: string;
   owner: Signer;
-  factoryAddress?: string;
   index?: BigNumberish;
 }
 
 /**
- * An implementation of the BaseAccountAPI using the SimpleAccount contract.
+ * An implementation of the BaseAccountAPI using the Gnosis Safe contracts.
  * - contract deployer gets "entrypoint", "owner" addresses and "index" nonce
  * - owner signs requests using normal "Ethereum Signed Message" (ether's signer.signMessage())
  * - nonce method is "nonce()"
  * - execute method is "execFromEntryPoint()"
  */
 export class AccountAPI extends BaseAccountAPI {
-  factoryAddress?: string;
+  eip4337Manager: EIP4337Manager;
+  gnosisSafeAccountFactory: GnosisSafeAccountFactory;
   owner: Signer;
   index: BigNumberish;
 
@@ -39,20 +43,26 @@ export class AccountAPI extends BaseAccountAPI {
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
    */
-  accountContract?: SimpleAccount;
-
-  factory?: SimpleAccountFactory;
+  accountContract?: GnosisSafeProxy;
 
   constructor(params: AccountApiParams) {
     super(params);
-    this.factoryAddress = params.factoryAddress;
     this.owner = params.owner;
     this.index = BigNumber.from(params.index ?? 0);
+
+    this.eip4337Manager = EIP4337Manager__factory.connect(
+      params.eip4337ManagerAddress,
+      this.provider,
+    );
+    this.gnosisSafeAccountFactory = GnosisSafeAccountFactory__factory.connect(
+      params.gnosisSafeAccountFactoryAddress,
+      this.provider,
+    );
   }
 
-  async _getAccountContract(): Promise<SimpleAccount> {
+  async _getAccountContract(): Promise<GnosisSafeProxy> {
     if (this.accountContract == null) {
-      this.accountContract = SimpleAccount__factory.connect(
+      this.accountContract = GnosisSafeProxy__factory.connect(
         await this.getAccountAddress(),
         this.provider,
       );
@@ -65,22 +75,12 @@ export class AccountAPI extends BaseAccountAPI {
    * this value holds the "factory" address, followed by this account's information
    */
   async getAccountInitCode(): Promise<string> {
-    if (this.factory == null) {
-      if (this.factoryAddress != null && this.factoryAddress !== '') {
-        this.factory = SimpleAccountFactory__factory.connect(
-          this.factoryAddress,
-          this.provider,
-        );
-      } else {
-        throw new Error('no factory to get initCode');
-      }
-    }
     return hexConcat([
-      this.factory.address,
-      this.factory.interface.encodeFunctionData('createAccount', [
-        await this.owner.getAddress(),
-        this.index,
-      ]),
+      this.gnosisSafeAccountFactory.address,
+      this.gnosisSafeAccountFactory.interface.encodeFunctionData(
+        'createAccount',
+        [await this.owner.getAddress(), this.index],
+      ),
     ]);
   }
 
@@ -103,12 +103,15 @@ export class AccountAPI extends BaseAccountAPI {
     value: BigNumberish,
     data: string,
   ): Promise<string> {
-    const accountContract = await this._getAccountContract();
-    return accountContract.interface.encodeFunctionData('execute', [
-      target,
-      value,
-      data,
-    ]);
+    return this.eip4337Manager.interface.encodeFunctionData(
+      'executeAndRevert',
+      [
+        target,
+        value,
+        data,
+        0, // Enum.Operation.Call
+      ],
+    );
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
