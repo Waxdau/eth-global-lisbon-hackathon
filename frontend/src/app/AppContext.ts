@@ -113,10 +113,24 @@ export default class AppContext {
     console.log('tx complete');
   }
 
-  async addSignature(paymentChannel: PaymentChannel, payment: Payment) {
-    const encodedPayment = PaymentChannel.encodePayment(payment);
+  createPayment(
+    simplePayment: Pick<Payment, 'to' | 'amount' | 'description'>,
+  ): Payment {
+    return {
+      sender: this.address,
+      nonce: '0x00', // TODO: nonce
+      token: '0x0000000000000000000000000000000000000000', // TODO: token
+      ...simplePayment,
+    };
+  }
 
-    const signature = this.signer.sign(ethers.utils.hexlify(encodedPayment));
+  async addSignature(paymentChannel: PaymentChannel, payment: Payment) {
+    const encodedPayment = await PaymentChannel.encodePayment(
+      payment,
+      this.aaProvider,
+    );
+
+    const signature = this.signer.sign(encodedPayment);
 
     await paymentChannel.addSignature(this.signer.pubkey, signature);
   }
