@@ -1,3 +1,5 @@
+import { BigNumber, ethers } from 'ethers';
+
 const statuses = {
   green: 'text-green-700 bg-green-50 ring-green-600/20',
   gray: 'text-gray-600 bg-gray-50 ring-gray-500/10',
@@ -50,10 +52,12 @@ export default function Transaction({
         <div className="flex justify-between gap-x-4 py-3">
           <dt className="text-gray-500">Amount</dt>
           <dd className="flex items-start gap-x-2">
-            <div className="font-medium text-gray-900">{amount}</div>
+            <div className="font-medium text-gray-900">
+              {ethers.utils.formatEther(BigNumber.from(amount))}
+            </div>
             <div
               className={classNames(
-                (statuses as any)['red'],
+                (statuses as any)[numSigned < sigsNeeded ? 'red' : 'green'],
                 'rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset',
               )}
             >
