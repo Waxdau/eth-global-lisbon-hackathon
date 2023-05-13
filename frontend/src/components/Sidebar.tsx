@@ -174,7 +174,7 @@ export default function SideBar() {
         </button>
       </div>
 
-      <main className="m-12">
+      <main className="m-12 w-full">
         <Outlet />
       </main>
     </div>
