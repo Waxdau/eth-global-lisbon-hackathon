@@ -1,31 +1,37 @@
-import { FormEvent } from 'react';
-import PaymentChannel from '../PaymentChannel';
+import { FormEvent, useState } from 'react';
 import AppContext from '../AppContext';
+import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
+import { Payment } from '../PaymentChannel';
+import { ethers } from 'ethers';
+import PaymentChannel from '../PaymentChannel';
 import { useNavigate } from 'react-router-dom';
 
 export default function Propose() {
   const appContext = AppContext.use();
+
+  const [amount, setAmount] = useState('');
+  const [address, setAddress] = useState('');
+
+  let payment: Payment | undefined;
+
+  if (!Number.isNaN(parseFloat(amount)) && address) {
+    payment = appContext?.createPayment({
+      to: address,
+      amount: ethers.utils.parseEther(amount).toHexString(),
+      description: 'test',
+    });
+  }
+
+  const signaturesNeeded = payment && calculateSignaturesNeeded(payment);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const address = event.currentTarget.elements.namedItem(
-      'address',
-    ) as HTMLInputElement;
-    const amount = event.currentTarget.elements.namedItem(
-      'amount',
-    ) as HTMLInputElement;
-
-    if (!appContext) {
+    if (!payment) {
       return;
     }
-
-    const payment = appContext?.createPayment({
-      to: address.value,
-      amount: amount.value,
-      description: 'test',
-    });
 
     const paymentChannel = await PaymentChannel.create(payment);
     navigate(`/sign?id=${paymentChannel.id}`);
@@ -58,6 +64,8 @@ export default function Propose() {
                     type="address"
                     autoComplete="address"
                     className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                    onChange={(event) => setAddress(event.target.value)}
+                    value={address}
                   />
                 </div>
               </div>
@@ -75,8 +83,13 @@ export default function Propose() {
                     type="amount"
                     autoComplete="amount"
                     className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                    onChange={(event) => setAmount(event.target.value)}
+                    value={amount}
                   />
                 </div>
+              </div>
+              <div className="sm:col-span-4">
+                Signatures needed: {signaturesNeeded}
               </div>
 
               <div className="sm:col-span-3">

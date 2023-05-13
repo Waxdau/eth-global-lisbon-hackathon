@@ -3,6 +3,7 @@ import { solG2 } from '@thehubbleproject/bls/dist/mcl';
 import PaymentChannel, { Payment } from '../PaymentChannel';
 import Transaction from '../components/Transaction';
 import AppContext from '../AppContext';
+import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
 
 export default function Page() {
   const appContext = AppContext.use();
@@ -45,6 +46,8 @@ export default function Page() {
       </div>
     );
 
+  const sigsNeeded = calculateSignaturesNeeded(payment);
+
   return (
     <form>
       <div className="space-y-12">
@@ -53,7 +56,7 @@ export default function Page() {
             Sign Group Transaction
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400 pb-6">
-            This transaction needs 3 of 5 signatures.
+            This transaction needs {sigsNeeded} signatures.
           </p>
           <Transaction
             to={payment.to}
@@ -61,6 +64,7 @@ export default function Page() {
             description={payment.description}
             amount={payment.amount}
             numSigned={publicKeys.length}
+            sigsNeeded={sigsNeeded}
           />
         </div>
       </div>
