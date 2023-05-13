@@ -3,8 +3,8 @@ pragma solidity ^0.8.7;
 
 /* solhint-disable no-inline-assembly */
 
-import "@gnosis.pm/safe-contracts/contracts/handler/DefaultCallbackHandler.sol";
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
+import "../../safe-contracts/contracts/handler/DefaultCallbackHandler.sol";
+import "../../safe-contracts/contracts/Safe.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "../../interfaces/IAccount.sol";
@@ -13,8 +13,8 @@ import "./EIP4337Manager.sol";
 using ECDSA for bytes32;
 
 /**
- * The GnosisSafe enables adding custom functions implementation to the Safe by setting a 'fallbackHandler'.
- * This 'fallbackHandler' adds an implementation of 'validateUserOp' to the GnosisSafe.
+ * The Safe enables adding custom functions implementation to the Safe by setting a 'fallbackHandler'.
+ * This 'fallbackHandler' adds an implementation of 'validateUserOp' to the Safe.
  * Note that the implementation of the 'validateUserOp' method is located in the EIP4337Manager.
  * Upon receiving the 'validateUserOp', a Safe with EIP4337Fallback enabled makes a 'delegatecall' to EIP4337Manager.
  */
@@ -31,8 +31,8 @@ contract EIP4337Fallback is DefaultCallbackHandler, IAccount, IERC1271 {
      */
     function delegateToManager() internal returns (bytes memory) {
         // delegate entire msg.data (including the appended "msg.sender") to the EIP4337Manager
-        // will work only for GnosisSafe contracts
-        GnosisSafe safe = GnosisSafe(payable(msg.sender));
+        // will work only for Safe contracts
+        Safe safe = Safe(payable(msg.sender));
         (bool success, bytes memory ret) = safe.execTransactionFromModuleReturnData(eip4337manager, 0, msg.data, Enum.Operation.DelegateCall);
         if (!success) {
             assembly {
@@ -73,11 +73,11 @@ contract EIP4337Fallback is DefaultCallbackHandler, IAccount, IERC1271 {
     function isValidSignature(
         bytes32 _hash,
         bytes memory _signature
-    ) external override view returns (bytes4) {
+    ) external override (IERC1271) view returns (bytes4) {
         bytes32 hash = _hash.toEthSignedMessageHash();
         address recovered = hash.recover(_signature);
 
-        GnosisSafe safe = GnosisSafe(payable(address(msg.sender)));
+        Safe safe = Safe(payable(address(msg.sender)));
 
         // Validate signatures
         if (safe.isOwner(recovered)) {
