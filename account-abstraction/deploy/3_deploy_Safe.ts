@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { ethers } from 'hardhat'
 
-const deployGnosis: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deploySafe: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const provider = ethers.provider
   const from = await provider.getSigner().getAddress()
   const network = await provider.getNetwork()
@@ -12,24 +12,24 @@ const deployGnosis: DeployFunction = async function (hre: HardhatRuntimeEnvironm
   }
 
   const gsRet = await hre.deployments.deploy(
-    'GnosisSafe', {
+    'Safe', {
       from,
       args: [],
       gasLimit: 6e6,
       log: true,
       deterministicDeployment: true
     })
-  console.log('==GnosisSafe addr=', gsRet.address)
+  console.log('==Safe addr=', gsRet.address)
 
   const gspfRet = await hre.deployments.deploy(
-    'GnosisSafeProxyFactory', {
+    'SafeProxyFactory', {
       from,
       args: [],
       gasLimit: 6e6,
       log: true,
       deterministicDeployment: true
     })
-  console.log('==GnosisSafeProxyFactory addr=', gspfRet.address)
+  console.log('==SafeProxyFactory addr=', gspfRet.address)
 
   const entrypoint = await hre.deployments.get('EntryPoint')
   const managerRet = await hre.deployments.deploy(
@@ -43,7 +43,7 @@ const deployGnosis: DeployFunction = async function (hre: HardhatRuntimeEnvironm
   console.log('==EIP4337Manager addr=', gspfRet.address)
 
   const gsafRet = await hre.deployments.deploy(
-    'GnosisSafeAccountFactory', {
+    'SafeAccountFactory', {
       from,
       args: [
         gspfRet.address,
@@ -54,7 +54,7 @@ const deployGnosis: DeployFunction = async function (hre: HardhatRuntimeEnvironm
       log: true,
       deterministicDeployment: true
     })
-  console.log('==GnosisSafeAccountFactory addr=', gsafRet.address)
+  console.log('==SafeAccountFactory addr=', gsafRet.address)
 }
 
-export default deployGnosis
+export default deploySafe
