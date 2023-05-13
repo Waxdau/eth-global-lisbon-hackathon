@@ -1,9 +1,12 @@
 "use client";
 
 import NewTransactionButton from "./components/NewTransactionButton";
+import Channel from "../utils/Channel";
 import { ethers, Wallet } from "ethers";
 import { useEffect, useState } from "react";
 import { wrapProvider, ERC4337EthersProvider } from "@account-abstraction/sdk";
+
+(globalThis as any).Channel = Channel;
 
 const privateKey =
   "0x8bc8492537b7a65d3698ada8ab1169964e3880f97c0139359a6f2d7095879bfd";
