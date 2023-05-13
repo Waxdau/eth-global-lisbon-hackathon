@@ -57,7 +57,7 @@ export default function Transaction({
             </div>
             <div
               className={classNames(
-                (statuses as any)['red'],
+                (statuses as any)[numSigned < sigsNeeded ? 'red' : 'green'],
                 'rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset',
               )}
             >
