@@ -12,18 +12,16 @@ import PublicKey from './PublicKey';
 import { usePathname } from 'next/navigation';
 
 const navigation = [
-  { name: 'Create Multi-sig', href: '/', icon: WalletIcon, current: true },
+  { name: 'Create Multi-sig', href: '/', icon: WalletIcon },
   {
     name: 'Propose Transaction',
     href: '/propose',
     icon: UsersIcon,
-    current: false,
   },
   {
     name: 'Sign Transaction',
     href: '/sign',
     icon: PencilIcon,
-    current: false,
   },
 ];
 
