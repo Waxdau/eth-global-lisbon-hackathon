@@ -198,8 +198,10 @@ export async function fillAndSign (op: Partial<UserOperation>, signer: Wallet | 
   const chainId = await provider!.getNetwork().then(net => net.chainId)
   const message = arrayify(getUserOpHash(op2, entryPoint!.address, chainId))
 
+  const ecdsaSignature = await signer.signMessage(message)
+
   return {
     ...op2,
-    signature: await signer.signMessage(message)
+    signature: ecdsaSignature.replace('0x', '0x01') //pre-pend with byte 1 for ECDSA type
   }
 }

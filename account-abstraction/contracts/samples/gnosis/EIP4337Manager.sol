@@ -14,6 +14,7 @@ import "../../interfaces/IAccount.sol";
 import "../../interfaces/IEntryPoint.sol";
 import "../../utils/Exec.sol";
 
+import "./Verifiers.sol";
     using ECDSA for bytes32;
 
 /**
@@ -27,6 +28,9 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
 
     address public immutable eip4337Fallback;
     address public immutable entryPoint;
+    ECDSAVerifier public immutable ecdsaVerifier;
+
+    mapping(IVerifier=>bool) trustedVerifiers; //TODO Fallback to Safe modules
 
     // return value in case of signature failure, with no time-range.
     // equivalent to _packValidationData(true,0,0);
@@ -37,6 +41,23 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
     constructor(address anEntryPoint) {
         entryPoint = anEntryPoint;
         eip4337Fallback = address(new EIP4337Fallback(address(this)));
+        ecdsaVerifier = new ECDSAVerifier();
+        enableVerifier(ecdsaVerifier);
+    }
+
+    function enableVerifier(IVerifier verifier) public {
+        require(trustedVerifiers[verifier] == false, "V: Already trusted.");
+        trustedVerifiers[verifier] = true;
+    }
+    function disableVerifier(IVerifier verifier) public {
+        require(trustedVerifiers[verifier] == true, "V: Not trusted.");
+        trustedVerifiers[verifier] = false;
+    }
+
+    function addBLSVerifier() internal {
+        BLSGroupVerifier blsVerifier = new BLSGroupVerifier();
+        //add public bls keys to group
+        enableVerifier(blsVerifier);
     }
 
     /**
@@ -47,13 +68,10 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
         address msgSender = address(bytes20(msg.data[msg.data.length - 20 :]));
         require(msgSender == entryPoint, "account: not from entrypoint");
 
-        GnosisSafe pThis = GnosisSafe(payable(address(this)));
-        bytes32 hash = userOpHash.toEthSignedMessageHash();
-        address recovered = hash.recover(userOp.signature);
-        require(threshold == 1, "account: only threshold 1");
-        if (!pThis.isOwner(recovered)) {
-            validationData = SIG_VALIDATION_FAILED;
-        }
+        validationData = verifyHash(
+            userOpHash,
+            userOp.signature
+        );
 
         // mimic normal Safe nonce behaviour: prevent parallel nonces
         require(userOp.nonce < type(uint64).max, "account: nonsequential nonce");
@@ -66,6 +84,29 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
         }
     }
 
+    function verifyHash(
+        bytes32 userOpHash,
+        bytes calldata verificationData
+    ) internal view returns (uint256 result) {
+
+        bytes1 verificationDataType = verificationData[0];
+        if (uint8(verificationDataType) == 1) {
+            IVerifier verifier = ecdsaVerifier; // TODO address from bytes
+            // require(trustedVerifiers[verifier], "V: verifier not trusted");
+            require(threshold == 1, "account: only threshold 1");
+            bytes calldata ecdsaSignature = verificationData[1:];
+            if (!ecdsaVerifier.verify(
+                GnosisSafe(payable(address(this))),
+                userOpHash,
+                ecdsaSignature
+            )) {
+                result = SIG_VALIDATION_FAILED;
+            }
+        }
+        else {
+            result = SIG_VALIDATION_FAILED;
+        }
+    }
     /**
      * Execute a call but also revert if the execution fails.
      * The default behavior of the Safe is to not revert if the call fails,
@@ -158,10 +199,11 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
 
         // this prevents mistaken replaceEIP4337Manager to disable the module completely.
         // minimal signature that pass "recover"
-        bytes memory sig = new bytes(65);
-        sig[64] = bytes1(uint8(27));
-        sig[2] = bytes1(uint8(1));
-        sig[35] = bytes1(uint8(1));
+        bytes memory sig = new bytes(66);
+        sig[0] = bytes1(uint8(1)); // ecdsa
+        sig[1+64] = bytes1(uint8(27));
+        sig[1+2] = bytes1(uint8(1));
+        sig[1+35] = bytes1(uint8(1));
         uint256 nonce = uint256(IEntryPoint(manager.entryPoint()).getNonce(address(safe), 0));
         UserOperation memory userOp = UserOperation(address(safe), nonce, "", "", 0, 1000000, 0, 0, 0, "", sig);
         UserOperation[] memory userOps = new UserOperation[](1);

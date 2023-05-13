@@ -29,7 +29,7 @@ import { fillAndSign } from './UserOp'
 import { defaultAbiCoder, hexConcat, hexZeroPad, parseEther } from 'ethers/lib/utils'
 import { expect } from 'chai'
 
-describe('Gnosis Proxy', function () {
+describe.only('Gnosis Proxy', function () {
   this.timeout(30000)
 
   let ethersSigner: Signer
@@ -80,6 +80,14 @@ describe('Gnosis Proxy', function () {
       to: proxy.address,
       value: parseEther('0.1')
     })
+    // const ECDSAVerifier = await ethers.getContractFactory('ECDSAVerifier')
+    // const ecdsaVerifier = await ECDSAVerifier.deploy()
+
+    // let enableModuleData = await proxySafe.contract.methods.enableModule(ecdsaVerifier.address).encodeABI()
+    // console.log(enableModuleData)
+    // await execTransaction(proxySafe.address, 0, enableModuleData, CALL, "enable module")
+
+    // await (await proxySafe.enableModule(ecdsaVerifier.address, { from: ownerAddress })).wait()
 
     const counter_countCallData = counter.interface.encodeFunctionData('count')
     safe_execTxCallData = manager.interface.encodeFunctionData('executeAndRevert', [counter.address, 0, counter_countCallData, 0])
