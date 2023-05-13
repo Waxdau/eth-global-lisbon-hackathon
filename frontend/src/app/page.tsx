@@ -17,13 +17,26 @@ export default function Home() {
     chainId: 31337,
   });
   const signer = new Wallet(privateKey, provider);
+  const [aaProvider, setAaProvider] = useState<
+    ERC4337EthersProvider | undefined
+  >();
   const [address, setAddress] = useState<string | undefined>();
 
   useEffect(() => {
-    const getAddress = async () => {
-      setAddress(await signer.getAddress());
+    const getAaProvider = async () => {
+      const tempAaProvider = await wrapProvider(
+        provider,
+        {
+          entryPointAddress,
+          bundlerUrl,
+        },
+        signer
+      );
+
+      setAaProvider(tempAaProvider);
+      setAddress(await tempAaProvider.getSigner().getAddress());
     };
-    getAddress();
+    getAaProvider();
   }, []);
 
   return (
@@ -32,7 +45,7 @@ export default function Home() {
         <div>Multi-sig Balance: 1 ETH</div>
         <div>Address: {address}</div>
         <div>
-          <NewTransactionButton provider={provider} signer={signer} />
+          <NewTransactionButton provider={aaProvider} />
         </div>
       </div>
       <div>
