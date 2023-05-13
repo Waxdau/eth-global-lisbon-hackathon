@@ -21,6 +21,7 @@ export default function Home() {
     ERC4337EthersProvider | undefined
   >();
   const [address, setAddress] = useState<string | undefined>();
+  const [balance, setBalance] = useState<string | undefined>();
 
   useEffect(() => {
     const getAaProvider = async () => {
@@ -33,6 +34,9 @@ export default function Home() {
         signer
       );
 
+      const balance = await tempAaProvider.getBalance(signer.address);
+      console.log(balance.toString())
+      setBalance(balance.toString());
       setAaProvider(tempAaProvider);
       setAddress(await tempAaProvider.getSigner().getAddress());
     };
@@ -42,7 +46,7 @@ export default function Home() {
   return (
     <main className="flex items-center justify-between p-24">
       <div>
-        <div>Multi-sig Balance: 1 ETH</div>
+        <div>Multi-sig Balance: {balance}</div>
         <div>Address: {address}</div>
         <div>
           <NewTransactionButton provider={aaProvider} />
