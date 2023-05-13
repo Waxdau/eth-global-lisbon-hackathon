@@ -1,11 +1,11 @@
-import NewTransactionButton from './components/NewTransactionButton';
-import './debug';
-import CreateWalletForm from './components/CreateWalletForm';
-import AppContext from './AppContext';
+import NewTransactionButton from '../components/NewTransactionButton';
+import '../debug';
+import CreateWalletForm from '../components/CreateWalletForm';
+import AppContext from '../AppContext';
 
-import './index.css';
+import { ethers } from 'ethers';
 
-export default function Home() {
+export default function Create() {
   const appContext = AppContext.use();
 
   return (
@@ -18,7 +18,15 @@ export default function Home() {
         <p className="mt-8">Hardhat wallet: {appContext?.hhSigner.address}</p>
         <p>
           Hardhat balance:
-          {/* {hhBalance ? ethers.utils.formatEther(hhBalance) : 0} */}
+          {(() => {
+            const hhBalance = appContext?.hhBalance;
+
+            if (hhBalance === undefined) {
+              return '...';
+            }
+
+            return ethers.utils.formatEther(hhBalance);
+          })()}
         </p>
         <button
           onClick={() => appContext?.fundWallet()}
@@ -31,7 +39,15 @@ export default function Home() {
       <div className="flex flex-col mt-8">
         <div>
           Smart Account Balance:{' '}
-          {/* {balance ? ethers.utils.formatEther(balance) : 0} */}
+          {(() => {
+            const balance = appContext?.balance;
+
+            if (balance === undefined) {
+              return '...';
+            }
+
+            return ethers.utils.formatEther(balance);
+          })()}
         </div>
         <div>Address: {appContext?.address}</div>
         <div>

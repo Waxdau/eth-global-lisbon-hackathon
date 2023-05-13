@@ -1,12 +1,14 @@
 import { once } from '@s-libs/micro-dash';
 import { signer } from '@thehubbleproject/bls';
 import blsDomain from './blsDomain';
-import { Wallet, ethers } from 'ethers';
+import { BigNumber, Wallet, ethers } from 'ethers';
 import PaymentChannel, { Payment } from './PaymentChannel';
 import { useEffect, useState } from 'react';
 import { wrapProvider } from './account/wrapProvider';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
-import makeId from '../utils/makeId';
+import makeId from './utils/makeId';
+import TestToken from './ERC20/TestToken.json';
+import { ExtendedECDSASigner } from './account/ExtendedECDSASigner';
 
 // aaProvider!.smartAccountAPI.getUserOpHash()
 // encode
@@ -37,7 +39,7 @@ export default class AppContext {
     });
     const hhSigner = new Wallet(hardHatPrivateKey, provider);
 
-    const aaSigner = new Wallet(aaPrivateKey, provider);
+    const aaSigner = new ExtendedECDSASigner(aaPrivateKey, provider);
     const tempAaProvider = await wrapProvider(
       provider,
       {
@@ -66,8 +68,8 @@ export default class AppContext {
       rpcUrl,
       provider,
       hhSigner,
-      hhBalance.toString(),
-      balance.toString(),
+      hhBalance,
+      balance,
       tempAaProvider,
       await tempAaProvider.getSigner().getAddress(),
       signerFactory.getSigner(
@@ -95,8 +97,8 @@ export default class AppContext {
     public rpcUrl: string,
     public provider: ethers.providers.Provider,
     public hhSigner: Wallet,
-    public hhBalance: string,
-    public balance: string,
+    public hhBalance: BigNumber,
+    public balance: BigNumber,
     public aaProvider: ERC4337EthersProvider,
     public address: string,
     public signer: signer.BlsSignerInterface,
@@ -113,10 +115,24 @@ export default class AppContext {
     console.log('tx complete');
   }
 
-  async addSignature(paymentChannel: PaymentChannel, payment: Payment) {
-    const encodedPayment = PaymentChannel.encodePayment(payment);
+  createPayment(
+    simplePayment: Pick<Payment, 'to' | 'amount' | 'description'>,
+  ): Payment {
+    return {
+      sender: this.address,
+      nonce: '0x00', // TODO: nonce
+      token: TestToken.address, // TODO: token
+      ...simplePayment,
+    };
+  }
 
-    const signature = this.signer.sign(ethers.utils.hexlify(encodedPayment));
+  async addSignature(paymentChannel: PaymentChannel, payment: Payment) {
+    const encodedPayment = await PaymentChannel.encodePayment(
+      payment,
+      this.aaProvider,
+    );
+
+    const signature = this.signer.sign(encodedPayment);
 
     await paymentChannel.addSignature(this.signer.pubkey, signature);
   }

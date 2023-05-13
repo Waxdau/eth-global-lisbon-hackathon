@@ -1,13 +1,23 @@
 import { solG1, solG2 } from '@thehubbleproject/bls/dist/mcl';
 import * as io from 'io-ts';
 import { signer } from '@thehubbleproject/bls';
-import Channel from '../utils/Channel';
-import assertType from '../utils/assertType';
+import Channel from './utils/Channel';
+import assertType from './utils/assertType';
+import { ERC4337EthersProvider } from '@account-abstraction/sdk';
+import { IERC20__factory } from './ERC20/IERC20__factory';
+
+const callGasLimit = '1000000';
+const verificationGasLimit = '1000000';
+const preVerificationGas = '1000000';
+const maxFeePerGas = '100000000000'; // 100 gwei
+const maxPriorityFeePerGas = '1000000000'; // 1 gwei
 
 export const Payment = io.type({
+  sender: io.string,
+  nonce: io.string,
   token: io.string,
   to: io.string,
-  amount: io.number,
+  amount: io.string,
   description: io.string,
 });
 
@@ -78,8 +88,33 @@ export default class PaymentChannel {
     };
   }
 
-  static encodePayment(payment: Payment) {
-    // TODO: Get the actual message that needs to be signed
-    return new TextEncoder().encode(JSON.stringify(payment));
+  static async encodePayment(
+    payment: Payment,
+    aaProvider: ERC4337EthersProvider,
+  ) {
+    const callData = await aaProvider.smartAccountAPI.encodeExecute(
+      payment.token,
+      0,
+      IERC20__factory.createInterface().encodeFunctionData('transfer', [
+        payment.to,
+        payment.amount,
+      ]),
+    );
+
+    const userOpHash = await aaProvider.smartAccountAPI.getUserOpHash({
+      sender: payment.sender,
+      nonce: payment.nonce,
+      initCode: '0x',
+      callData,
+      callGasLimit,
+      verificationGasLimit,
+      preVerificationGas,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      paymasterAndData: '0x',
+      signature: '0x',
+    });
+
+    return userOpHash;
   }
 }

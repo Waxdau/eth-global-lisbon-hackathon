@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import PublicKey from './PublicKey';
 import { usePathname } from 'next/navigation';
+import { Link, Outlet } from 'react-router-dom';
 
 const navigation = [
   { name: 'Create Multi-sig', href: '/', icon: WalletIcon },
@@ -34,7 +35,7 @@ export default function SideBar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="sidebar">
+    <div className="layout">
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -87,6 +88,7 @@ export default function SideBar() {
                     </button>
                   </div>
                 </Transition.Child>
+
                 {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
                   <div className="flex justify-center">
@@ -98,21 +100,21 @@ export default function SideBar() {
                         <ul role="list" className="-mx-2 space-y-1">
                           {navigation.map((item) => (
                             <li key={item.name}>
-                              <a
-                                href={item.href}
+                              <Link
                                 className={classNames(
                                   pathname === item.href
                                     ? 'bg-gray-800 text-white'
                                     : 'text-gray-400 hover:text-white hover:bg-gray-800',
                                   'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                 )}
+                                to={item.href}
                               >
                                 <item.icon
                                   className="h-6 w-6 shrink-0"
                                   aria-hidden="true"
                                 />
                                 {item.name}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -127,7 +129,7 @@ export default function SideBar() {
       </Transition.Root>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div className="hidden lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
           <PublicKey />
@@ -137,21 +139,21 @@ export default function SideBar() {
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => (
                     <li key={item.name}>
-                      <a
-                        href={item.href}
+                      <Link
                         className={classNames(
                           pathname === item.href
                             ? 'bg-gray-800 text-white'
                             : 'text-gray-400 hover:text-white hover:bg-gray-800',
                           'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                         )}
+                        to={item.href}
                       >
                         <item.icon
                           className="h-6 w-6 shrink-0"
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -161,7 +163,7 @@ export default function SideBar() {
         </div>
       </div>
 
-      <div className="sticky top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
+      <div className="sticky w-14 top-0 z-40 flex items-start gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden h-full">
         <button
           type="button"
           className="-m-2.5 p-2.5 text-gray-400 lg:hidden"
@@ -172,8 +174,8 @@ export default function SideBar() {
         </button>
       </div>
 
-      <main className="py-10 lg:pl-72">
-        <div className="px-4 sm:px-6 lg:px-8">{/* Your content */}</div>
+      <main className="m-12">
+        <Outlet />
       </main>
     </div>
   );
