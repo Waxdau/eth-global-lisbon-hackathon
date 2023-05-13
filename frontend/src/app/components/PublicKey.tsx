@@ -1,4 +1,3 @@
-'use client';
 import { UserIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import AppContext from '../AppContext';
 import { ethers } from 'ethers';

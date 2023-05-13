@@ -1,8 +1,8 @@
-import Channel from '@/utils/Channel';
-import assertType from '@/utils/assertType';
 import { solG1, solG2 } from '@thehubbleproject/bls/dist/mcl';
 import * as io from 'io-ts';
 import { signer } from '@thehubbleproject/bls';
+import Channel from '../utils/Channel';
+import assertType from '../utils/assertType';
 
 export const Payment = io.type({
   token: io.string,

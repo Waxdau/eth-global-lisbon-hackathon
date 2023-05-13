@@ -1,15 +1,15 @@
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers';
 import {
   SimpleAccount,
   SimpleAccount__factory,
   SimpleAccountFactory,
-  SimpleAccountFactory__factory
-} from 'account-abstraction'
+  SimpleAccountFactory__factory,
+} from 'account-abstraction';
 
-import { arrayify, hexConcat } from 'ethers/lib/utils'
-import { Signer } from '@ethersproject/abstract-signer'
-import { BaseAccountAPI } from '@account-abstraction/sdk'
-import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI'
+import { arrayify, hexConcat } from 'ethers/lib/utils';
+import { Signer } from '@ethersproject/abstract-signer';
+import { BaseAccountAPI } from '@account-abstraction/sdk';
+import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
 
 /**
  * constructor params, added no top of base params:
@@ -31,56 +31,65 @@ export interface AccountApiParams extends BaseApiParams {
  * - execute method is "execFromEntryPoint()"
  */
 export class AccountAPI extends BaseAccountAPI {
-  factoryAddress?: string
-  owner: Signer
-  index: BigNumberish
+  factoryAddress?: string;
+  owner: Signer;
+  index: BigNumberish;
 
   /**
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
    */
-  accountContract?: SimpleAccount
+  accountContract?: SimpleAccount;
 
-  factory?: SimpleAccountFactory
+  factory?: SimpleAccountFactory;
 
   constructor (params: AccountApiParams) {
-    super(params)
-    this.factoryAddress = params.factoryAddress
-    this.owner = params.owner
-    this.index = BigNumber.from(params.index ?? 0)
+    super(params);
+    this.factoryAddress = params.factoryAddress;
+    this.owner = params.owner;
+    this.index = BigNumber.from(params.index ?? 0);
   }
 
-  async _getAccountContract (): Promise<SimpleAccount> {
+  async _getAccountContract(): Promise<SimpleAccount> {
     if (this.accountContract == null) {
-      this.accountContract = SimpleAccount__factory.connect(await this.getAccountAddress(), this.provider)
+      this.accountContract = SimpleAccount__factory.connect(
+        await this.getAccountAddress(),
+        this.provider,
+      );
     }
-    return this.accountContract
+    return this.accountContract;
   }
 
   /**
    * return the value to put into the "initCode" field, if the account is not yet deployed.
    * this value holds the "factory" address, followed by this account's information
    */
-  async getAccountInitCode (): Promise<string> {
+  async getAccountInitCode(): Promise<string> {
     if (this.factory == null) {
       if (this.factoryAddress != null && this.factoryAddress !== '') {
-        this.factory = SimpleAccountFactory__factory.connect(this.factoryAddress, this.provider)
+        this.factory = SimpleAccountFactory__factory.connect(
+          this.factoryAddress,
+          this.provider,
+        );
       } else {
-        throw new Error('no factory to get initCode')
+        throw new Error('no factory to get initCode');
       }
     }
     return hexConcat([
       this.factory.address,
-      this.factory.interface.encodeFunctionData('createAccount', [await this.owner.getAddress(), this.index])
-    ])
+      this.factory.interface.encodeFunctionData('createAccount', [
+        await this.owner.getAddress(),
+        this.index,
+      ]),
+    ]);
   }
 
-  async getNonce (): Promise<BigNumber> {
+  async getNonce(): Promise<BigNumber> {
     if (await this.checkAccountPhantom()) {
-      return BigNumber.from(0)
+      return BigNumber.from(0);
     }
-    const accountContract = await this._getAccountContract()
-    return await accountContract.getNonce()
+    const accountContract = await this._getAccountContract();
+    return await accountContract.getNonce();
   }
 
   /**
@@ -89,18 +98,20 @@ export class AccountAPI extends BaseAccountAPI {
    * @param value
    * @param data
    */
-  async encodeExecute (target: string, value: BigNumberish, data: string): Promise<string> {
-    const accountContract = await this._getAccountContract()
-    return accountContract.interface.encodeFunctionData(
-      'execute',
-      [
-        target,
-        value,
-        data
-      ])
+  async encodeExecute(
+    target: string,
+    value: BigNumberish,
+    data: string,
+  ): Promise<string> {
+    const accountContract = await this._getAccountContract();
+    return accountContract.interface.encodeFunctionData('execute', [
+      target,
+      value,
+      data,
+    ]);
   }
 
-  async signUserOpHash (userOpHash: string): Promise<string> {
-    return await this.owner.signMessage(arrayify(userOpHash))
+  async signUserOpHash(userOpHash: string): Promise<string> {
+    return await this.owner.signMessage(arrayify(userOpHash));
   }
 }
