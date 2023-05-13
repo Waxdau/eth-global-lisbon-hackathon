@@ -7,12 +7,12 @@ import {
   EIP4337Manager__factory,
   EntryPoint,
   EntryPoint__factory,
-  GnosisSafe,
-  GnosisSafeAccountFactory,
-  GnosisSafeAccountFactory__factory,
-  GnosisSafeProxy,
-  GnosisSafeProxyFactory__factory,
-  GnosisSafe__factory,
+  Safe,
+  SafeAccountFactory,
+  SafeAccountFactory__factory,
+  SafeProxy,
+  SafeProxyFactory__factory,
+  Safe__factory,
   TestCounter,
   TestCounter__factory
 } from '../typechain'
@@ -33,17 +33,17 @@ describe.only('Gnosis Proxy', function () {
   this.timeout(30000)
 
   let ethersSigner: Signer
-  let safeSingleton: GnosisSafe
+  let safeSingleton: Safe
   let owner: Signer
   let ownerAddress: string
-  let proxy: GnosisSafeProxy
+  let proxy: SafeProxy
   let manager: EIP4337Manager
   let entryPoint: EntryPoint
   let counter: TestCounter
-  let proxySafe: GnosisSafe
+  let proxySafe: Safe
   let safe_execTxCallData: string
 
-  let accountFactory: GnosisSafeAccountFactory
+  let accountFactory: SafeAccountFactory
 
   before('before', async function () {
     // EIP4337Manager fails to compile with solc-coverage
@@ -55,16 +55,16 @@ describe.only('Gnosis Proxy', function () {
     ethersSigner = provider.getSigner()
 
     // standard safe singleton contract (implementation)
-    safeSingleton = await new GnosisSafe__factory(ethersSigner).deploy()
+    safeSingleton = await new Safe__factory(ethersSigner).deploy()
     // standard safe proxy factory
-    const proxyFactory = await new GnosisSafeProxyFactory__factory(ethersSigner).deploy()
+    const proxyFactory = await new SafeProxyFactory__factory(ethersSigner).deploy()
     entryPoint = await deployEntryPoint()
     manager = await new EIP4337Manager__factory(ethersSigner).deploy(entryPoint.address)
     owner = createAccountOwner()
     ownerAddress = await owner.getAddress()
     counter = await new TestCounter__factory(ethersSigner).deploy()
 
-    accountFactory = await new GnosisSafeAccountFactory__factory(ethersSigner)
+    accountFactory = await new SafeAccountFactory__factory(ethersSigner)
       .deploy(proxyFactory.address, safeSingleton.address, manager.address)
 
     await accountFactory.createAccount(ownerAddress, 0)
@@ -74,7 +74,7 @@ describe.only('Gnosis Proxy', function () {
     const addr = ev[0].args.proxy
 
     proxy =
-      proxySafe = GnosisSafe__factory.connect(addr, owner)
+      proxySafe = Safe__factory.connect(addr, owner)
 
     await ethersSigner.sendTransaction({
       to: proxy.address,

@@ -8,6 +8,7 @@ import { wrapProvider } from './account/wrapProvider';
 import { ERC4337EthersProvider } from '@account-abstraction/sdk';
 import makeId from './utils/makeId';
 import TestToken from './ERC20/TestToken.json';
+import { ExtendedECDSASigner } from './account/ExtendedECDSASigner';
 
 // aaProvider!.smartAccountAPI.getUserOpHash()
 // encode
@@ -38,7 +39,7 @@ export default class AppContext {
     });
     const hhSigner = new Wallet(hardHatPrivateKey, provider);
 
-    const aaSigner = new Wallet(aaPrivateKey, provider);
+    const aaSigner = new ExtendedECDSASigner(aaPrivateKey, provider);
     const tempAaProvider = await wrapProvider(
       provider,
       {
