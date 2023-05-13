@@ -33,7 +33,7 @@ export class BLSSigner extends Signer {
     signTransaction(_transaction: Deferrable<TransactionRequest>): Promise<string> {
         throw new Error("signTransaction not implemented");
     }
-    connect(provider: Provider): Signer {
+    connect(_provider: Provider): Signer {
         throw new Error("connect not implemented");
     }
 
