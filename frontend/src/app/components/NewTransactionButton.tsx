@@ -8,7 +8,7 @@ interface NewTransactionButtonProps {
 
 const entryPointAddress = "";
 const chainId = 31337;
-const recipient = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // Hardhat Account 2
+const recipient = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"; // Hardhat Account 3/4?
 const factoryAddress = "";
 
 const NewTransactionButton = ({ provider }: NewTransactionButtonProps) => {
