@@ -1,4 +1,4 @@
-import {Buffer} from 'buffer';
+import { Buffer } from 'buffer';
 
 const globalRecord = globalThis as Record<string, unknown>;
 

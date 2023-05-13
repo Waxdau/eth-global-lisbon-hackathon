@@ -6,7 +6,6 @@ import CreateWalletForm from './components/CreateWalletForm';
 import AppContext from './AppContext';
 
 import './index.css';
-import React from 'react';
 
 export default function Home() {
   const appContext = AppContext.use();
@@ -23,7 +22,10 @@ export default function Home() {
           Hardhat balance:
           {/* {hhBalance ? ethers.utils.formatEther(hhBalance) : 0} */}
         </p>
-        <button onClick={appContext?.fundWallet} className="p-2 rounded-lg bg-green-500">
+        <button
+          onClick={appContext?.fundWallet}
+          className="p-2 rounded-lg bg-green-500"
+        >
           Fund AA wallet
         </button>
       </div>
