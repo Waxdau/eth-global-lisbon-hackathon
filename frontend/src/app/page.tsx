@@ -3,10 +3,10 @@
 import NewTransactionButton from "./components/NewTransactionButton";
 import Channel from "../utils/Channel";
 import { ethers, Wallet } from "ethers";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { wrapProvider, ERC4337EthersProvider } from "@account-abstraction/sdk";
 
-(globalThis as any).Channel = Channel;
+(globalThis as Record<string, unknown>).Channel = Channel;
 
 const privateKey =
   "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a";
@@ -15,11 +15,16 @@ const bundlerUrl = "http://localhost:3000/rpc";
 const rpcUrl = "http://localhost:8545";
 
 export default function Home() {
-  const provider = new ethers.providers.JsonRpcProvider(rpcUrl, {
-    name: "localhost",
-    chainId: 31337,
-  });
-  const signer = new Wallet(privateKey, provider);
+  const { provider, signer } = useMemo(() => {
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl, {
+      name: "localhost",
+      chainId: 31337,
+    });
+    const signer = new Wallet(privateKey, provider);
+
+    return { provider, signer };
+  }, []);
+
   const [aaProvider, setAaProvider] = useState<
     ERC4337EthersProvider | undefined
   >();
@@ -44,12 +49,12 @@ export default function Home() {
       setAddress(await tempAaProvider.getSigner().getAddress());
     };
     getAaProvider();
-  }, []);
+  }, [provider, signer]);
 
   return (
     <main className="flex items-center justify-between p-24">
       <div>
-        <div>Multi-sig Balance: {ethers.utils.formatEther(balance)}</div>
+        <div>Multi-sig Balance: {balance && ethers.utils.formatEther(balance)}</div>
         <div>Address: {address}</div>
         <div>
           <NewTransactionButton provider={aaProvider} />
