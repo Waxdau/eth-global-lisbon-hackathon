@@ -10,20 +10,11 @@ import {
   DeterministicDeployer,
 } from '@account-abstraction/sdk';
 import { Signer } from '@ethersproject/abstract-signer';
-import { signer } from '@thehubbleproject/bls';
 import Debug from 'debug';
 
-import { BLSAccountAPI } from './BLSAccountAPI';
+import { AccountAPI } from './AccountAPI';
 
 const debug = Debug('aa.bls.wrapProvider');
-
-const getBLSSigner = async (): Promise<signer.BlsSignerInterface> => {
-  const privateKey = '0xabc123';
-  const domain = 'notthebeeeeeeees';
-
-  const blsSignerFactory = await signer.BlsSignerFactory.new();
-  return blsSignerFactory.getSigner(domain, privateKey);
-};
 
 /**
  * wrap an existing provider to tunnel requests through Account Abstraction.
@@ -48,10 +39,10 @@ export async function wrapProvider(
     [entryPoint.address],
   );
 
-  const smartAccountAPI = new BLSAccountAPI({
+  const smartAccountAPI = new AccountAPI({
     provider: originalProvider,
     entryPointAddress: entryPoint.address,
-    blsSigner: await getBLSSigner(),
+    owner: originalSigner,
     factoryAddress: SimpleAccountFactory,
     paymasterAPI: config.paymasterAPI,
   });
@@ -67,7 +58,6 @@ export async function wrapProvider(
   return await new ERC4337EthersProvider(
     chainId,
     config,
-    // TODO What is this signer needed for?
     originalSigner,
     originalProvider,
     httpRpcClient,

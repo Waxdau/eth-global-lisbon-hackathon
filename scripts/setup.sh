@@ -8,7 +8,7 @@ git submodule init && git submodule update
 
 # account-abstraction
 echo "setting up account-abstraction..."
-(cd ./account-abstraction && yarn)
+(cd ./account-abstraction && yarn && yarn compile)
 
 # bundler
 echo "setting up bundler..."
