@@ -6,22 +6,38 @@ import AppContext from '../AppContext';
 export default function Page() {
   const appContext = AppContext.use();
   const [payment, setPayment] = useState<Payment | undefined>();
-  const channel = new PaymentChannel('kn68khjqqm3bf473tkrbd1633');
+  const [numSigs, setNumSigs] = useState(0);
+  const url = new URL(window.location.href);
+  const id = url.searchParams.get('id');
 
   useEffect(() => {
     const getPaymentData = async () => {
+      if (!id) return;
+      const channel = new PaymentChannel(id);
       const tempPayment = await channel.getPayment();
+      const signedTx = await channel.getSignedPayment();
+      setNumSigs(signedTx.publicKeys.length);
       setPayment(tempPayment);
     };
     getPaymentData();
   }, []);
 
   const addSignature = async () => {
-    if (!appContext || !payment) return;
+    if (!appContext || !payment || !id) return;
+    const channel = new PaymentChannel(id);
     appContext.addSignature(channel, payment);
   };
 
-  if (!payment) return null;
+  if (!payment)
+    return (
+      <div className="space-y-12">
+        <div className="border-b border-white/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-white">
+            No transaction to sign!
+          </h2>
+        </div>
+      </div>
+    );
 
   return (
     <form>
@@ -38,6 +54,7 @@ export default function Page() {
             token={payment.token}
             description={payment.description}
             amount={payment.amount}
+            numSigned={numSigs}
           />
         </div>
       </div>
@@ -45,7 +62,10 @@ export default function Page() {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="submit"
-          onClick={addSignature}
+          onClick={(e) => {
+            e.preventDefault();
+            addSignature();
+          }}
           className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
         >
           Add signature

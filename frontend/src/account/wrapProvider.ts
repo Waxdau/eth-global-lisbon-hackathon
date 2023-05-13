@@ -1,7 +1,10 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   EntryPoint__factory,
-  SimpleAccountFactory__factory,
+  EIP4337Manager__factory,
+  GnosisSafe__factory,
+  GnosisSafeProxyFactory__factory,
+  GnosisSafeAccountFactory__factory,
 } from 'account-abstraction';
 import {
   ClientConfig,
@@ -31,19 +34,34 @@ export async function wrapProvider(
     config.entryPointAddress,
     originalProvider,
   );
-  // Initial SimpleAccount instance is not deployed and exists just for the interface
   const detDeployer = new DeterministicDeployer(originalProvider);
-  const SimpleAccountFactory = await detDeployer.deterministicDeploy(
-    new SimpleAccountFactory__factory(),
+  const eip4337ManagerAddress = await detDeployer.deterministicDeploy(
+    new EIP4337Manager__factory(),
     0,
     [entryPoint.address],
+  );
+  const safeSingletonAddress = await detDeployer.deterministicDeploy(
+    new GnosisSafe__factory(),
+    0,
+    [],
+  );
+  const proxyFactoryAddress = await detDeployer.deterministicDeploy(
+    new GnosisSafeProxyFactory__factory(),
+    0,
+    [],
+  );
+  const gnosisSafeAccountFactoryAddress = await detDeployer.deterministicDeploy(
+    new GnosisSafeAccountFactory__factory(),
+    0,
+    [proxyFactoryAddress, safeSingletonAddress, eip4337ManagerAddress],
   );
 
   const smartAccountAPI = new AccountAPI({
     provider: originalProvider,
     entryPointAddress: entryPoint.address,
     owner: originalSigner,
-    factoryAddress: SimpleAccountFactory,
+    eip4337ManagerAddress,
+    gnosisSafeAccountFactoryAddress,
     paymasterAPI: config.paymasterAPI,
   });
   debug('config=', config);
