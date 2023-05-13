@@ -358,16 +358,6 @@
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/transactions/-/transactions-5.7.0.tgz#91318fc24063e057885a6af13fdb703e1f993d3b"
   integrity sha512-kmcNicCp1lp8qanMTC3RIikGgoJ80ztTyvtsFvCYpSCfkjhD0jZ2LOrnbcuxuToLIUYYf+4XwD1rP+B/erDIhQ==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/bytes" "^5.7.0"
-    "@ethersproject/constants" "^5.7.0"
-    "@ethersproject/keccak256" "^5.7.0"
-    "@ethersproject/logger" "^5.7.0"
-    "@ethersproject/properties" "^5.7.0"
-    "@ethersproject/rlp" "^5.7.0"
-    "@ethersproject/signing-key" "^5.7.0"
 
 "@ethersproject/units@5.7.0":
   version "5.7.0"
@@ -583,6 +573,14 @@
   integrity sha512-sJ902EfIzn1Fa+qYmjdQqh8tPsoxyBz+8yBKC2HKUxyezKJFwPGOn7pv4WY6QuQW//ySQi5lJjA/ZT9sNWWNTg==
   dependencies:
     tslib "^2.4.0"
+
+"@thehubbleproject/bls@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@thehubbleproject/bls/-/bls-0.5.1.tgz#6b0565f56fc9c8896dcf3c8f0e2214b69a06167f"
+  integrity sha512-g5zeMZ8js/yg6MjFoC+pt0eqfCL2jC46yLY1LbKNriyqftB1tE3jpG/FMMDIW3x9/yRg/AgUb8Nluqj15tQs+A==
+  dependencies:
+    ethers "^5.5.3"
+    mcl-wasm "^1.0.0"
 
 "@types/debug@^4.1.7":
   version "4.1.7"
@@ -1517,7 +1515,7 @@ esutils@^2.0.2:
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-ethers@5.7.2, ethers@^5.7.0:
+ethers@5.7.2, ethers@^5.5.3, ethers@^5.7.0:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -2250,6 +2248,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+mcl-wasm@^1.0.0:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/mcl-wasm/-/mcl-wasm-1.0.6.tgz#834420a38aa7c7eab789d08b2834f75fb375f6eb"
+  integrity sha512-/KYSug255SQoOcrQBxkHeAub9qOcJD3B/n5livcsGKsbv4TOiefNmUAwpMP0Vea5AVBUApolr+iF0GqZixns1w==
 
 merge-stream@^2.0.0:
   version "2.0.0"
