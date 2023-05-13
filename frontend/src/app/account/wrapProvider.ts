@@ -2,7 +2,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   EntryPoint__factory,
   SimpleAccountFactory__factory,
-} from '@account-abstraction/contracts';
+} from 'account-abstraction';
 import {
   ClientConfig,
   ERC4337EthersProvider,

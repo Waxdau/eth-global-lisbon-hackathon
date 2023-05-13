@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "account-abstraction": "../account-abstraction/contracts",
     "@account-abstraction/sdk": "^0.6.0",
     "@thehubbleproject/bls": "^0.5.1",
     "@types/node": "20.1.3",
