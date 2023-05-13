@@ -32,8 +32,6 @@ function classNames(...classes: string[]) {
 
 export default function SideBar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [blsPublicKey, setBlsPublicKey] = useState('0xabc...123');
 
   return (
     <>
@@ -93,7 +91,7 @@ export default function SideBar() {
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
                     <div className="flex justify-center">
-                      <PublicKey publicKey={blsPublicKey} />
+                      <PublicKey />
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -133,7 +131,7 @@ export default function SideBar() {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
-            <PublicKey publicKey={blsPublicKey} />
+            <PublicKey />
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
