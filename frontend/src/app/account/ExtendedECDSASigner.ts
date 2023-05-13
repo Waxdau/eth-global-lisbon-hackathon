@@ -30,7 +30,7 @@ export class ExtendedECDSASigner extends Signer {
         return new ExtendedECDSASigner(this.signingKey.privateKey, provider);
     }
 
-    async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
+    async signTransaction(_transaction: Deferrable<TransactionRequest>): Promise<string> {
         throw new Error("signTransaction not implemented.");
     }
 }
