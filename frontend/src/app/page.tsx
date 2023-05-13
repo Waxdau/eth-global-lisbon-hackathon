@@ -75,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-between p-24">
+    <>
       <CreateWalletForm />
       <div className="flex flex-col mt-10">
         <h1 className="text-xl">OLD UI TO TEST BUNDLE</h1>
@@ -106,6 +106,6 @@ export default function Home() {
         <div>0x1234</div>
         <div>0x1234</div>
       </div>
-    </main>
+    </>
   );
 }
