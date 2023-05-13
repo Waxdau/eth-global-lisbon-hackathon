@@ -4,6 +4,7 @@ import makeId from '@/utils/makeId';
 import blsDomain from './blsDomain';
 import { ethers } from 'ethers';
 import PaymentChannel, { Payment } from './PaymentChannel';
+import { useEffect, useState } from 'react';
 
 export default class AppContext {
   static getSingleton = once(async () => {
@@ -24,6 +25,16 @@ export default class AppContext {
       ),
     );
   });
+
+  static use = () => {
+    const [appContext, setAppContext] = useState<AppContext>();
+
+    useEffect(() => {
+      AppContext.getSingleton().then(setAppContext);
+    }, []);
+
+    return appContext;
+  };
 
   constructor(public signer: signer.BlsSignerInterface) {}
 

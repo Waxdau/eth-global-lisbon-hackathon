@@ -1,12 +1,23 @@
 'use client';
 import { UserIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import AppContext from '../AppContext';
+import { ethers } from 'ethers';
 
-interface PublicKeyProps {
-  publicKey: string;
-}
+const PublicKey = () => {
+  const appContext = AppContext.use();
 
-const PublicKey = ({ publicKey }: PublicKeyProps) => {
+  const publicKey =
+    appContext &&
+    ethers.utils.defaultAbiCoder.encode(
+      ['uint256', 'uint256', 'uint256', 'uint256'],
+      appContext.signer.pubkey,
+    );
+
   const copyPublicKey = () => {
+    if (publicKey === undefined) {
+      return;
+    }
+
     navigator.clipboard.writeText(publicKey);
   };
 
@@ -18,8 +29,8 @@ const PublicKey = ({ publicKey }: PublicKeyProps) => {
       </div>
 
       <div className="flex items-center my-2">
-        <span className="bg-gray-800 rounded-lg px-4 py-1 mr-2">
-          {publicKey}
+        <span className="bg-gray-800 rounded-lg px-4 py-1 mr-2 text-ellipsis">
+          {publicKey ?? 'Loading...'}
         </span>
 
         <button onClick={copyPublicKey}>
