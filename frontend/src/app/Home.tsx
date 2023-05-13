@@ -9,7 +9,7 @@ export default function Home() {
   const appContext = AppContext.use();
 
   return (
-    <>
+    <div className="home">
       <CreateWalletForm />
       <div className="flex flex-col mt-10">
         <h1 className="text-xl">OLD UI TO TEST BUNDLE</h1>
@@ -44,6 +44,6 @@ export default function Home() {
         <div>0x1234</div>
         <div>0x1234</div>
       </div>
-    </>
+    </div>
   );
 }
