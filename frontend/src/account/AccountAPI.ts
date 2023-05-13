@@ -6,12 +6,14 @@ import {
   GnosisSafeAccountFactory__factory,
   EIP4337Manager,
   EIP4337Manager__factory,
+  UserOperationStruct,
 } from 'account-abstraction';
 
 import { arrayify, hexConcat } from 'ethers/lib/utils';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BaseAccountAPI } from '@account-abstraction/sdk';
 import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
+import { TransactionDetailsForUserOp } from '@account-abstraction/sdk/src/TransactionDetailsForUserOp';
 
 /**
  * constructor params, added no top of base params:
@@ -116,5 +118,20 @@ export class AccountAPI extends BaseAccountAPI {
 
   async signUserOpHash(userOpHash: string): Promise<string> {
     return await this.owner.signMessage(arrayify(userOpHash));
+  }
+
+  override async createUnsignedUserOp(
+    info: TransactionDetailsForUserOp,
+  ): Promise<UserOperationStruct> {
+    const unsignedOp = await super.createUnsignedUserOp(info);
+    console.debug('orig unsigned user op', unsignedOp);
+    const newUnsignedOp = {
+      ...unsignedOp,
+      preVerificationGas: BigNumber.from(
+        await unsignedOp.preVerificationGas,
+      ).mul(2),
+    };
+    console.debug('new unsigned user op', newUnsignedOp);
+    return newUnsignedOp;
   }
 }
