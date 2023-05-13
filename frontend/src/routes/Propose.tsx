@@ -89,13 +89,7 @@ export default function Propose() {
                 </div>
               </div>
               <div className="sm:col-span-4">
-                <label
-                  htmlFor="amount"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Signatures needed:
-                </label>
-                <div className="mt-2">{signaturesNeeded}</div>
+                Signatures needed: {signaturesNeeded}
               </div>
 
               <div className="sm:col-span-3">
