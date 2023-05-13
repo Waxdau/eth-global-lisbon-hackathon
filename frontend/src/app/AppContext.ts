@@ -17,7 +17,12 @@ export default class AppContext {
       localStorage.setItem('seed-id', seedId);
     }
 
-    return new AppContext(signerFactory.getSigner(blsDomain, seedId));
+    return new AppContext(
+      signerFactory.getSigner(
+        blsDomain,
+        ethers.utils.hexlify(new TextEncoder().encode(seedId)),
+      ),
+    );
   });
 
   constructor(public signer: signer.BlsSignerInterface) {}

@@ -32,6 +32,7 @@ export default class PaymentChannel {
   }
 
   static async create(payment: Payment) {
+    assertType(payment, Payment);
     const channel = await Channel.create();
     await channel.push(payment);
 
