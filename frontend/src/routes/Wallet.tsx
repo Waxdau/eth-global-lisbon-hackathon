@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { solG2 } from '@thehubbleproject/bls/dist/mcl';
-import Transaction from '../components/Transaction';
 import PaymentChannel, { Payment } from '../PaymentChannel';
 import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
 import { BigNumber, ethers } from 'ethers';
+import CompletedTransaction from '../components/CompletedTransaction';
 
 const oneToken = BigNumber.from(10).pow(18);
 const BALANCE = oneToken.mul(1000);
@@ -59,7 +59,7 @@ export default function Page() {
               Recent Transactions:
             </h2>
 
-            <Transaction
+            <CompletedTransaction
               to={payment.to}
               token={payment.token}
               description={payment.description}
