@@ -89,6 +89,8 @@ export default class AppContext {
     return appContext;
   };
 
+  walletAddress: string | undefined;
+
   constructor(
     public hardHatPrivateKey: string,
     public aaPrivateKey: string,
@@ -102,7 +104,9 @@ export default class AppContext {
     public aaProvider: ERC4337EthersProvider,
     public address: string,
     public signer: signer.BlsSignerInterface,
-  ) {}
+  ) {
+    this.walletAddress = localStorage.getItem('wallet-address') ?? undefined;
+  }
 
   async fundWallet() {
     const accountAddress = await this.aaProvider.getSigner().getAddress();
@@ -136,5 +140,9 @@ export default class AppContext {
     const signature = this.signer.sign(encodedPayment);
 
     await paymentChannel.addSignature(this.signer.pubkey, signature);
+  }
+
+  static setWalletAddress(address: string) {
+    localStorage.setItem('wallet-address', address);
   }
 }

@@ -2,6 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { FormEvent } from 'react';
 import createWallet from '../createWallet';
 import { solG2 } from '@thehubbleproject/bls/dist/mcl';
+import AppContext from '../AppContext';
 
 interface CreateWalletFieldProps {
   label: string;
@@ -101,7 +102,9 @@ export default function Page() {
 
     const walletAddress = await createWallet(pubKeys);
 
-    location.href = `/wallet?address=${walletAddress}`;
+    AppContext.setWalletAddress(walletAddress);
+
+    location.href = '/wallet';
   };
 
   return (
