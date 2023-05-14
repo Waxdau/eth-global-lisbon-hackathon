@@ -58,6 +58,8 @@ const SetupWalletField = ({ label, name }: CreateWalletFieldProps) => (
 );
 
 export default function Page() {
+  const appContext = AppContext.use();
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -94,7 +96,7 @@ export default function Page() {
             .map((x: BigNumber) => x.toHexString()) as solG2,
       );
 
-    const walletAddress = await createWallet(pubKeys);
+    const walletAddress = await createWallet(appContext, pubKeys);
 
     AppContext.setWalletAddress(walletAddress);
 
