@@ -6,6 +6,7 @@ import {
   XMarkIcon,
   WalletIcon,
   PencilIcon,
+  BugAntIcon,
 } from '@heroicons/react/24/outline';
 import PublicKey from './PublicKey';
 import { usePathname } from 'next/navigation';
@@ -22,6 +23,11 @@ const navigation = [
     name: 'Sign',
     href: '/sign',
     icon: PencilIcon,
+  },
+  {
+    name: 'Debug',
+    href: '/debug',
+    icon: BugAntIcon,
   },
 ];
 

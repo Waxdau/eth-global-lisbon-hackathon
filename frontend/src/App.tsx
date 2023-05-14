@@ -4,6 +4,7 @@ import Propose from './routes/Propose';
 import Create from './routes/Create';
 import Sign from './routes/Sign';
 import Wallet from './routes/Wallet';
+import Debug from './routes/Debug';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="propose" element={<Propose />} />
           <Route path="sign" element={<Sign />} />
           <Route path="wallet" element={<Wallet />} />
+          <Route path="debug" element={<Debug />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>

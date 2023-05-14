@@ -117,12 +117,12 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-end gap-x-6">
+      <div className="mt-6 flex items-center gap-x-6">
         <button
           type="submit"
           className="rounded-xl bg-green-500 px-4 py-2 text-lg font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
         >
-          Setup Wallet
+          Create
         </button>
       </div>
     </form>
