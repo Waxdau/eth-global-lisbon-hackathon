@@ -11,6 +11,7 @@ import {
 import PublicKey from './PublicKey';
 import { usePathname } from 'next/navigation';
 import { Link, Outlet } from 'react-router-dom';
+import WalletDisplay from './WalletDisplay';
 
 const navigation = [
   { name: 'Create', href: '/', icon: WalletIcon },
@@ -139,6 +140,7 @@ export default function SideBar() {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
           <PublicKey />
+          <WalletDisplay />
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
