@@ -19,7 +19,13 @@ const WalletDisplay = () => {
 
   return (
     <div className="flex flex-col h-16 shrink-0 mt-4">
-      <div className="flex">
+      <div
+        className="flex wallet-side"
+        style={{ cursor: 'pointer' }}
+        onClick={() => {
+          location.href = '/wallet';
+        }}
+      >
         <WalletIcon className="h-6 w-6 shrink-0 pr-2" aria-hidden="true" />
         Wallet
       </div>
