@@ -4,6 +4,8 @@ import PaymentChannel, { Payment } from '../PaymentChannel';
 import Transaction from '../components/Transaction';
 import AppContext from '../AppContext';
 import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
+import { IERC20__factory } from '../ERC20/IERC20__factory';
+import { AccountAPI } from '../account/AccountAPI';
 
 export default function Page() {
   const appContext = AppContext.use();
@@ -37,6 +39,23 @@ export default function Page() {
 
   const addSignatureAndSend = async () => {
     await addSignature();
+
+    const provider = appContext?.aaProvider;
+    const signer = provider?.getSigner();
+
+    if (!id) return;
+    const channel = new PaymentChannel(id);
+    const signedTx = await channel.getSignedPayment();
+
+    const accountApi = provider?.smartAccountAPI as AccountAPI;
+    accountApi.setNextAggBlsSignature(signedTx.signature);
+
+    if (!payment || !signer) return;
+    const ERC20 = IERC20__factory.connect(payment.token, signer);
+
+    const transferTx = await ERC20.transfer(payment.to, payment.amount);
+    const reciept = await transferTx.wait();
+    console.log('reciept', reciept);
   };
 
   if (!payment)
