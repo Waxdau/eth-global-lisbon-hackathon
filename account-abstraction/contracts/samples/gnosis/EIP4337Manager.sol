@@ -13,7 +13,7 @@ import "./EIP4337Fallback.sol";
 import "../../interfaces/IAccount.sol";
 import "../../interfaces/IEntryPoint.sol";
 import "../../utils/Exec.sol";
-
+import "hardhat/console.sol";
 import "./Verifiers.sol";
     using ECDSA for bytes32;
 
@@ -28,10 +28,11 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
 
     address public immutable eip4337Fallback;
     address public immutable entryPoint;
-    ECDSAVerifier public immutable ecdsaVerifier;
-    BLSGroupVerifier public immutable blsVerifier;
+    IVerifier public immutable ecdsaVerifier;
+    IVerifier public immutable blsVerifier;
 
-    mapping(IVerifier=>bool) trustedVerifiers; //TODO Fallback to Safe modules
+    mapping(IVerifier=>uint8) public indexFromVerifier; //TODO Fallback to Safe modules
+    mapping(uint8=>IVerifier) public verifierFromIndex;
 
     // return value in case of signature failure, with no time-range.
     // equivalent to _packValidationData(true,0,0);
@@ -42,26 +43,25 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
     constructor(address anEntryPoint) {
         entryPoint = anEntryPoint;
         eip4337Fallback = address(new EIP4337Fallback(address(this)));
+
+
         ecdsaVerifier = new ECDSAVerifier();
-        enableVerifier(ecdsaVerifier);
+        enableVerifier(ecdsaVerifier, 1);
 
         blsVerifier = new BLSGroupVerifier();
-        enableVerifier(blsVerifier);
+        enableVerifier(blsVerifier, 2);
     }
 
-    function enableVerifier(IVerifier verifier) public {
-        require(trustedVerifiers[verifier] == false, "V: Already trusted.");
-        trustedVerifiers[verifier] = true;
+    function enableVerifier(IVerifier verifier, uint8 i) public {
+        // console.log("enableVerifier", address(verifier), i);
+        // require(indexFromVerifier[verifier] == 0, "V: Already enabled.");
+        indexFromVerifier[verifier] = i;
+        verifierFromIndex[i] = verifier;
     }
-    function disableVerifier(IVerifier verifier) public {
-        require(trustedVerifiers[verifier] == true, "V: Not trusted.");
-        trustedVerifiers[verifier] = false;
-    }
-
-    function addBLSVerifier() internal {
-        BLSGroupVerifier blsVerifier = new BLSGroupVerifier();
-        //add public bls keys to group
-        enableVerifier(blsVerifier);
+    function disableVerifier(IVerifier verifier, uint8 i) public {
+        // require(indexFromVerifier[verifier] > 0, "V: Not enabled.");
+        indexFromVerifier[verifier] = 0;
+        verifierFromIndex[i] = IVerifier(address(0));
     }
 
     /**
@@ -88,39 +88,40 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
         }
     }
 
+
     function verifyHash(
         bytes32 userOpHash,
         bytes calldata verificationData
     ) internal view returns (uint256 result) {
-
-        bytes1 verificationDataType = verificationData[0];
-        if (uint8(verificationDataType) == 1) {
-            IVerifier verifier = ecdsaVerifier; // TODO address from bytes
-            // require(trustedVerifiers[verifier], "V: verifier not trusted");
-            require(threshold == 1, "account: only threshold 1");
-            bytes calldata ecdsaSignature = verificationData[1:];
-            if (!ecdsaVerifier.verify(
-                Safe(payable(address(this))),
-                userOpHash,
-                ecdsaSignature
-            )) {
-                result = SIG_VALIDATION_FAILED;
-            }
-        } else if (uint8(verificationDataType) == 2) {
-            IVerifier verifier = blsVerifier; // TODO address from bytes
-            // require(trustedVerifiers[verifier], "V: verifier not trusted");
-            require(threshold == 1, "account: only threshold 1");
-            bytes calldata blsSig = verificationData[1:];
-            if (!blsVerifier.verify(
-                Safe(payable(address(this))),
-                userOpHash,
-                blsSig
-            )) {
-                result = SIG_VALIDATION_FAILED;
-            }
+        uint8 verifierIndex = uint8(verificationData[0]);
+        IVerifier verifier;
+        verifier = ecdsaVerifier;
+        if (verifierIndex == 1) {
+            verifier = ecdsaVerifier;
+        }
+        else if (verifierIndex == 2) {
+            verifier = blsVerifier;
         }
         else {
             result = SIG_VALIDATION_FAILED;
+            return result;
+        }
+
+        // verifier = verifierFromIndex[verifierIndex]; // TODO address from bytes
+        console.log(address(verifier));
+
+        // require(address(verifier) != address(0), "V: Unrecognised verifier");
+
+        if (!verifier.verify(
+            Safe(payable(address(this))),
+            userOpHash,
+            verificationData[1:]
+        )) {
+            result = SIG_VALIDATION_FAILED;
+        }
+
+        if (verifierIndex == 1) {
+            require(threshold == 1, "account: only threshold 1");
         }
     }
     /**

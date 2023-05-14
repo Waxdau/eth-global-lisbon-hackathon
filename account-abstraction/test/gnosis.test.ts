@@ -80,8 +80,9 @@ describe.only('Gnosis Proxy', function () {
       to: proxy.address,
       value: parseEther('0.1')
     })
-    // const ECDSAVerifier = await ethers.getContractFactory('ECDSAVerifier')
-    // const ecdsaVerifier = await ECDSAVerifier.deploy()
+    const ECDSAVerifier = await ethers.getContractFactory('ECDSAVerifier')
+    const ecdsaVerifier = await ECDSAVerifier.deploy()
+    // await (await manager.enableVerifier(ecdsaVerifier.address, 1)).wait()
 
     // let enableModuleData = await proxySafe.contract.methods.enableModule(ecdsaVerifier.address).encodeABI()
     // console.log(enableModuleData)
