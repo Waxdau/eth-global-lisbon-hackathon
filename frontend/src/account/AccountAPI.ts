@@ -6,6 +6,8 @@ import {
   SafeAccountFactory__factory,
   EIP4337Manager,
   EIP4337Manager__factory,
+  EntryPoint,
+  EntryPoint__factory,
   UserOperationStruct,
 } from 'account-abstraction';
 
@@ -38,8 +40,11 @@ export interface AccountApiParams extends BaseApiParams {
 export class AccountAPI extends BaseAccountAPI {
   eip4337Manager: EIP4337Manager;
   safeAccountFactory: SafeAccountFactory;
+  entryPoint: EntryPoint;
   owner: Signer;
   index: BigNumberish;
+
+  private nextAggBlsSignature: string | undefined;
 
   /**
    * our account contract.
@@ -52,6 +57,10 @@ export class AccountAPI extends BaseAccountAPI {
     this.owner = params.owner;
     this.index = BigNumber.from(params.index ?? 0);
 
+    this.entryPoint = EntryPoint__factory.connect(
+      params.entryPointAddress,
+      this.provider,
+    );
     this.eip4337Manager = EIP4337Manager__factory.connect(
       params.eip4337ManagerAddress,
       this.provider,
@@ -60,6 +69,10 @@ export class AccountAPI extends BaseAccountAPI {
       params.safeAccountFactoryAddress,
       this.provider,
     );
+  }
+
+  setNextAggBlsSignature(sig: string) {
+    this.nextAggBlsSignature = sig;
   }
 
   async _getAccountContract(): Promise<SafeProxy> {
@@ -91,7 +104,7 @@ export class AccountAPI extends BaseAccountAPI {
       return BigNumber.from(0);
     }
     const accountContract = await this._getAccountContract();
-    return await accountContract.getNonce();
+    return this.entryPoint.getNonce(accountContract.address, this.index);
   }
 
   /**
@@ -117,7 +130,13 @@ export class AccountAPI extends BaseAccountAPI {
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
-    return await this.owner.signMessage(arrayify(userOpHash));
+    if (!this.nextAggBlsSignature) {
+      return this.owner.signMessage(arrayify(userOpHash));
+    }
+    const sig = `0x02${this.nextAggBlsSignature}`;
+    this.nextAggBlsSignature = undefined;
+
+    return sig;
   }
 
   override async createUnsignedUserOp(

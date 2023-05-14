@@ -35,6 +35,10 @@ export default function Page() {
     (pk) => pk.join('') === appContext?.signer.pubkey.join(''),
   );
 
+  const addSignatureAndSend = async () => {
+    await addSignature();
+  };
+
   if (!payment)
     return (
       <div className="space-y-12">
@@ -70,9 +74,23 @@ export default function Page() {
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        {userSigned ? (
-          <div>You have already signed!</div>
-        ) : (
+        {userSigned && <div>You have already signed!</div>}
+
+        {sigsNeeded <= 1 && (
+          <button
+            type="submit"
+            disabled={!!userSigned}
+            onClick={(e) => {
+              e.preventDefault();
+              addSignatureAndSend();
+            }}
+            className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+          >
+            Add signature and send transaction
+          </button>
+        )}
+
+        {sigsNeeded > 1 && (
           <button
             type="submit"
             disabled={!!userSigned}
@@ -80,7 +98,7 @@ export default function Page() {
               e.preventDefault();
               addSignature();
             }}
-            className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
           >
             Add signature
           </button>
