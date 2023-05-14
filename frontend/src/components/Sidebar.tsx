@@ -6,22 +6,28 @@ import {
   XMarkIcon,
   WalletIcon,
   PencilIcon,
+  BugAntIcon,
 } from '@heroicons/react/24/outline';
 import PublicKey from './PublicKey';
 import { usePathname } from 'next/navigation';
 import { Link, Outlet } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Create Multi-sig', href: '/', icon: WalletIcon },
+  { name: 'Create', href: '/', icon: WalletIcon },
   {
-    name: 'Propose Transaction',
+    name: 'Propose',
     href: '/propose',
     icon: UsersIcon,
   },
   {
-    name: 'Sign Transaction',
+    name: 'Sign',
     href: '/sign',
     icon: PencilIcon,
+  },
+  {
+    name: 'Debug',
+    href: '/debug',
+    icon: BugAntIcon,
   },
 ];
 

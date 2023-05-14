@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish, ethers } from 'ethers';
 import {
   SafeProxy,
   SafeProxy__factory,
@@ -16,6 +16,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { BaseAccountAPI } from '@account-abstraction/sdk';
 import { BaseApiParams } from '@account-abstraction/sdk/src/BaseAccountAPI';
 import { TransactionDetailsForUserOp } from '@account-abstraction/sdk/src/TransactionDetailsForUserOp';
+import { solG1 } from '@thehubbleproject/bls/dist/mcl';
 
 /**
  * constructor params, added no top of base params:
@@ -71,8 +72,11 @@ export class AccountAPI extends BaseAccountAPI {
     );
   }
 
-  setNextAggBlsSignature(sig: string) {
-    this.nextAggBlsSignature = sig;
+  setNextAggBlsSignature(sig: solG1) {
+    this.nextAggBlsSignature = ethers.utils.defaultAbiCoder.encode(
+      ['uint256[2]'],
+      [sig],
+    );
   }
 
   async _getAccountContract(): Promise<SafeProxy> {
