@@ -63,6 +63,10 @@ export default function Page() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (appContext === undefined) {
+      return;
+    }
+
     const pubKey1 = event.currentTarget.elements.namedItem(
       'public-key-1',
     ) as HTMLInputElement;

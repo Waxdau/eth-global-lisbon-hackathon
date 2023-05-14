@@ -1,9 +1,5 @@
-import NewTransactionButton from '../components/NewTransactionButton';
 import '../debug';
 import CreateWalletForm from '../components/CreateWalletForm';
-import AppContext from '../AppContext';
-
-import { ethers } from 'ethers';
 
 export default function Create() {
   return (
