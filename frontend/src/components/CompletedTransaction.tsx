@@ -17,7 +17,10 @@ export default function Transaction({
   sigsNeeded: number;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <div
+      className="overflow-hidden rounded-xl border border-gray-200 bg-white"
+      style={{ filter: 'invert(0.9)' }}
+    >
       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
         <CheckCircleIcon className="h-12 w-12 text-black" aria-hidden="true" />
         <div className="flex-auto">
