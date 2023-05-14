@@ -39,8 +39,7 @@ contract BLSGroupVerifier is IVerifier, SafeStorage {
     IBLS public immutable blsOpen;
 
     constructor() {
-        // TODO Replace with real deploy
-        blsOpen = IBLS(0x13DCf97b6B94bDA883492AB46d556E8919445876);
+        blsOpen = IBLS(0x2a0Eed289C63F35b025Ee190AB5Bbba988F1E951);
     }
     
     function addMember(uint256[BLS_KEY_LEN] calldata newMember) public {
