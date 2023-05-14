@@ -73,10 +73,9 @@ export class AccountAPI extends BaseAccountAPI {
   }
 
   setNextAggBlsSignature(sig: solG1) {
-    this.nextAggBlsSignature = ethers.utils.defaultAbiCoder.encode(
-      ['uint256[2]'],
-      [sig],
-    );
+    this.nextAggBlsSignature = ethers.utils.defaultAbiCoder
+      .encode(['uint256[2]'], [sig])
+      .slice(2);
   }
 
   async _getAccountContract(): Promise<SafeProxy> {

@@ -23,7 +23,8 @@ export default async function createWallet(
     provider.getSigner(),
   );
 
-  await blsVerifier.setupGroup(publicKeys);
+  const setupGroupTx = await blsVerifier.setupGroup(publicKeys);
+  await setupGroupTx.wait();
 
   await accountApi.getNonce();
   return accountApi.accountContract?.address;

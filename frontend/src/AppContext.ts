@@ -57,6 +57,7 @@ export default class AppContext {
       balance,
       address: aaSigner.address,
     });
+    console.log(Buffer.from(blsDomain).toString('hex'));
 
     const hhBalance = await provider.getBalance(hhSigner.address);
 
