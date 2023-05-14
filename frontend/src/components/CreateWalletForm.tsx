@@ -1,7 +1,8 @@
-import { Contract } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { FormEvent } from 'react';
-import { BLSGroupVerifier } from 'account-abstraction';
 import AppContext from '../AppContext';
+import createWallet from '../createWallet';
+import { solG2 } from '@thehubbleproject/bls/dist/mcl';
 
 interface CreateWalletFieldProps {
   label: string;
@@ -52,13 +53,7 @@ export default function Page() {
       'public-key-5',
     ) as HTMLInputElement;
 
-    const blsGroupVerifier = new Contract(
-      BLSGroupVerifier.address,
-      BLSGroupVerifier.abi,
-      appContext?.aaProvider,
-    );
-
-    const pubKeys = [
+    const pubKeyStrings = [
       pubKey1.value,
       pubKey2.value,
       pubKey3.value,
@@ -66,8 +61,18 @@ export default function Page() {
       pubKey5.value,
     ];
 
-    const setupGroup = await blsGroupVerifier.setupGroup(pubKeys);
-    await setupGroup.wait();
+    const pubKeys = pubKeyStrings
+      .filter((str) => str !== '')
+      .map(
+        (str) =>
+          ethers.utils.defaultAbiCoder
+            .decode(['uint256', 'uint256', 'uint256', 'uint256'], str)
+            .map((x: BigNumber) => x.toHexString()) as solG2,
+      );
+
+    const walletAddress = await createWallet(pubKeys);
+
+    location.href = `/wallet?address=${walletAddress}`;
   };
 
   return (
