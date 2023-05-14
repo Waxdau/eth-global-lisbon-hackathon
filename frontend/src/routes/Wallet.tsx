@@ -3,6 +3,10 @@ import { solG2 } from '@thehubbleproject/bls/dist/mcl';
 import Transaction from '../components/Transaction';
 import PaymentChannel, { Payment } from '../PaymentChannel';
 import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
+import { BigNumber, ethers } from 'ethers';
+
+const oneToken = BigNumber.from(10).pow(18);
+const BALANCE = oneToken.mul(1000);
 
 export default function Page() {
   const [payment, setPayment] = useState<Payment | undefined>();
@@ -35,7 +39,10 @@ export default function Page() {
     <div className="space-y-12">
       <div className="border-b border-white/10 pb-12">
         <h2 className="text-base font-semibold leading-7 text-white">Wallet</h2>
-        Balance:
+        Balance:{' '}
+        {ethers.utils.formatEther(
+          BALANCE.sub(payment ? BigNumber.from(payment.amount) : 0),
+        )}
       </div>
       {(() => {
         if (
