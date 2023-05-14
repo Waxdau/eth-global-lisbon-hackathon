@@ -44,6 +44,8 @@ export class AccountAPI extends BaseAccountAPI {
   owner: Signer;
   index: BigNumberish;
 
+  private nextAggBlsSignature: string | undefined;
+
   /**
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
@@ -67,6 +69,10 @@ export class AccountAPI extends BaseAccountAPI {
       params.safeAccountFactoryAddress,
       this.provider,
     );
+  }
+
+  setNextAggBlsSignature(sig: string) {
+    this.nextAggBlsSignature = sig;
   }
 
   async _getAccountContract(): Promise<SafeProxy> {
@@ -124,7 +130,13 @@ export class AccountAPI extends BaseAccountAPI {
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
-    return await this.owner.signMessage(arrayify(userOpHash));
+    if (!this.nextAggBlsSignature) {
+      return this.owner.signMessage(arrayify(userOpHash));
+    }
+    const sig = `0x02${this.nextAggBlsSignature}`;
+    this.nextAggBlsSignature = undefined;
+
+    return sig;
   }
 
   override async createUnsignedUserOp(
