@@ -84,12 +84,6 @@ export default function Page() {
       pubKey4.value,
       pubKey5.value,
     ];
-    pubKeys;
-
-    const blsGroupVerifier = await new BLSGroupVerifier__factory(
-      appContext?.hhSigner,
-    ).deploy();
-    await blsGroupVerifier.deployed();
 
     const pubKeys = pubKeyStrings
       .filter((str) => str !== '')
