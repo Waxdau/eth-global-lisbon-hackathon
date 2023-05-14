@@ -29,6 +29,7 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
     address public immutable eip4337Fallback;
     address public immutable entryPoint;
     ECDSAVerifier public immutable ecdsaVerifier;
+    BLSGroupVerifier public immutable blsVerifier;
 
     mapping(IVerifier=>bool) trustedVerifiers; //TODO Fallback to Safe modules
 
@@ -43,6 +44,9 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
         eip4337Fallback = address(new EIP4337Fallback(address(this)));
         ecdsaVerifier = new ECDSAVerifier();
         enableVerifier(ecdsaVerifier);
+
+        blsVerifier = new BLSGroupVerifier();
+        enableVerifier(blsVerifier);
     }
 
     function enableVerifier(IVerifier verifier) public {
@@ -99,6 +103,18 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
                 Safe(payable(address(this))),
                 userOpHash,
                 ecdsaSignature
+            )) {
+                result = SIG_VALIDATION_FAILED;
+            }
+        } else if (uint8(verificationDataType) == 2) {
+            IVerifier verifier = blsVerifier; // TODO address from bytes
+            // require(trustedVerifiers[verifier], "V: verifier not trusted");
+            require(threshold == 1, "account: only threshold 1");
+            bytes calldata blsSig = verificationData[1:];
+            if (!blsVerifier.verify(
+                Safe(payable(address(this))),
+                userOpHash,
+                blsSig
             )) {
                 result = SIG_VALIDATION_FAILED;
             }
