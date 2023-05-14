@@ -35,7 +35,7 @@ contract BLSGroupVerifier is IVerifier, SafeStorage {
     uint8 public constant BLS_KEY_LEN = 4;
     uint256[BLS_KEY_LEN][] public groupMembers;
 
-    bytes32 public constant BLS_DOMAIN = keccak256("quorumPay");
+    bytes32 public constant BLS_DOMAIN = bytes32(uint(0xfeedbee5));
     IBLS public immutable blsOpen;
 
     constructor() {
