@@ -111,7 +111,14 @@ export default function Page() {
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
         {userSigned && sigsRemaining !== undefined && sigsRemaining > 0 && (
-          <div>You have already signed!</div>
+          <button
+            type="submit"
+            disabled={true}
+            className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+            style={{ backgroundColor: '#ffffff22' }}
+          >
+            More signatures needed
+          </button>
         )}
 
         {sigsRemaining === 0 && (
