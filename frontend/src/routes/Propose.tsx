@@ -92,7 +92,7 @@ export default function Propose() {
                 Signatures needed: {signaturesNeeded}
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="sm:col-span-3" style={{ display: 'none' }}>
                 <label
                   htmlFor="signature"
                   className="block text-sm font-medium leading-6 text-white"
