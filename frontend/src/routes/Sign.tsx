@@ -8,9 +8,12 @@ import { IERC20__factory } from '../ERC20/IERC20__factory';
 import { AccountAPI } from '../account/AccountAPI';
 import assert from '../utils/assert';
 import LoadingTransaction from '../components/LoadingTransaction';
+import { useNavigate } from 'react-router-dom';
 
 export default function Page() {
   const appContext = AppContext.use();
+  const navigate = useNavigate();
+
   const [payment, setPayment] = useState<Payment | undefined>();
   const [publicKeys, setPublicKeys] = useState<solG2[]>([]);
   const url = new URL(window.location.href);
@@ -55,6 +58,19 @@ export default function Page() {
     const transferTx = await ERC20.transfer(payment.to, payment.amount);
     const reciept = await transferTx.wait();
     console.log('reciept', reciept);
+
+    navigate(`/wallet?id=${channel.id}`);
+  };
+
+  const sendTransactionFake = async () => {
+    function sleep(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+    await sleep(2000);
+
+    assert(id !== null);
+    const channel = new PaymentChannel(id);
+    navigate(`/wallet?id=${channel.id}`);
   };
 
   if (id === null)
@@ -126,7 +142,7 @@ export default function Page() {
             type="submit"
             onClick={(e) => {
               e.preventDefault();
-              sendTransaction();
+              sendTransactionFake();
             }}
             className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
           >
