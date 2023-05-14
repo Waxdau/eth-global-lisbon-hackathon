@@ -7,6 +7,7 @@ import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
 import { IERC20__factory } from '../ERC20/IERC20__factory';
 import { AccountAPI } from '../account/AccountAPI';
 import assert from '../utils/assert';
+import LoadingTransaction from '../components/LoadingTransaction';
 
 export default function Page() {
   const appContext = AppContext.use();
@@ -58,7 +59,7 @@ export default function Page() {
     console.log('reciept', reciept);
   };
 
-  if (!payment)
+  if (id === null)
     return (
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
@@ -69,8 +70,13 @@ export default function Page() {
       </div>
     );
 
-  const sigsNeeded = calculateSignaturesNeeded(payment);
-  const sigsRemaining = sigsNeeded - publicKeys.length;
+  const sigsNeeded = payment && calculateSignaturesNeeded(payment);
+
+  let sigsRemaining: number | undefined = undefined;
+
+  if (sigsNeeded !== undefined) {
+    sigsRemaining = sigsNeeded - publicKeys.length;
+  }
 
   return (
     <form>
@@ -80,23 +86,35 @@ export default function Page() {
             Sign Group Transaction
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400 pb-6">
-            This transaction needs {sigsNeeded} signatures.
+            This transaction needs {sigsNeeded ?? '?'} signatures.
           </p>
-          <Transaction
-            to={payment.to}
-            token={payment.token}
-            description={payment.description}
-            amount={payment.amount}
-            numSigned={publicKeys.length}
-            sigsNeeded={sigsNeeded}
-          />
+          {(() => {
+            if (
+              payment === undefined ||
+              sigsNeeded === undefined ||
+              sigsRemaining === undefined
+            ) {
+              return <LoadingTransaction />;
+            }
+
+            return (
+              <Transaction
+                to={payment.to}
+                token={payment.token}
+                description={payment.description}
+                amount={payment.amount}
+                numSigned={publicKeys.length}
+                sigsNeeded={sigsNeeded}
+              />
+            );
+          })()}
         </div>
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
         {userSigned && <div>You have already signed!</div>}
 
-        {!userSigned && sigsRemaining <= 1 && (
+        {sigsRemaining !== undefined && !userSigned && sigsRemaining <= 1 && (
           <button
             type="submit"
             disabled={!!userSigned}
@@ -110,7 +128,7 @@ export default function Page() {
           </button>
         )}
 
-        {!userSigned && sigsRemaining > 1 && (
+        {sigsRemaining !== undefined && !userSigned && sigsRemaining > 1 && (
           <button
             type="submit"
             disabled={!!userSigned}
