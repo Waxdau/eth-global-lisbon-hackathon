@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation';
 import { Link, Outlet } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Create Multi-sig', href: '/', icon: WalletIcon },
+  { name: 'Create Wallet', href: '/', icon: WalletIcon },
   {
     name: 'Propose Transaction',
     href: '/propose',

@@ -1,6 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
 import { FormEvent } from 'react';
-import AppContext from '../AppContext';
 import createWallet from '../createWallet';
 import { solG2 } from '@thehubbleproject/bls/dist/mcl';
 
@@ -12,28 +11,52 @@ interface CreateWalletFieldProps {
 const SetupWalletField = ({ label, name }: CreateWalletFieldProps) => (
   <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
     <div className="sm:col-span-4">
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium leading-6 text-white"
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyItems: 'center',
+          justifyContent: 'center',
+          gap: '1rem',
+        }}
       >
-        {label}
-      </label>
-      <div className="mt-2">
-        <input
-          id={name}
-          name={name}
-          type={name}
-          autoComplete={name}
-          className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <label
+            htmlFor={name}
+            className="block text-sm font-medium leading-6 text-white"
+            style={{ textAlign: 'center', justifyContent: 'center' }}
+          >
+            {label}
+          </label>
+        </div>
+        <div
+          style={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          <input
+            id={name}
+            name={name}
+            type={name}
+            autoComplete={name}
+            className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+          />
+        </div>
       </div>
     </div>
   </div>
 );
 
 export default function Page() {
-  const appContext = AppContext.use();
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -80,17 +103,17 @@ export default function Page() {
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-white">
-            Setup Multi-sig
+            Create Wallet
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">
-            Setup a Multi-sig wallet with a list of addresses and a threshold
+            Enter the BLS public keys that should have access to this wallet.
           </p>
 
-          <SetupWalletField name="public-key-1" label="Signer public key 1" />
-          <SetupWalletField name="public-key-2" label="Signer public key 2" />
-          <SetupWalletField name="public-key-3" label="Signer public key 3" />
-          <SetupWalletField name="public-key-4" label="Signer public key 4" />
-          <SetupWalletField name="public-key-5" label="Signer public key 5" />
+          <SetupWalletField name="public-key-1" label="Key 1" />
+          <SetupWalletField name="public-key-2" label="Key 2" />
+          <SetupWalletField name="public-key-3" label="Key 3" />
+          <SetupWalletField name="public-key-4" label="Key 4" />
+          <SetupWalletField name="public-key-5" label="Key 5" />
         </div>
       </div>
 
