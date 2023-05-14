@@ -117,7 +117,6 @@ export default function Page() {
         {sigsRemaining === 0 && (
           <button
             type="submit"
-            disabled={!!userSigned}
             onClick={(e) => {
               e.preventDefault();
               sendTransaction();
