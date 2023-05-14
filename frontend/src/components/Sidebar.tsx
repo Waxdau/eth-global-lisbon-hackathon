@@ -12,14 +12,14 @@ import { usePathname } from 'next/navigation';
 import { Link, Outlet } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Create Wallet', href: '/', icon: WalletIcon },
+  { name: 'Create', href: '/', icon: WalletIcon },
   {
-    name: 'Propose Transaction',
+    name: 'Propose',
     href: '/propose',
     icon: UsersIcon,
   },
   {
-    name: 'Sign Transaction',
+    name: 'Sign',
     href: '/sign',
     icon: PencilIcon,
   },

@@ -103,7 +103,7 @@ export default function Page() {
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-white">
-            Create Wallet
+            Create a Wallet
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">
             Enter the BLS public keys that should have access to this wallet.
