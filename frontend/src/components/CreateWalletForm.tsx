@@ -1,6 +1,5 @@
-import { Contract } from 'ethers';
 import { FormEvent } from 'react';
-import { BLSGroupVerifier } from 'account-abstraction';
+import { BLSGroupVerifier__factory } from 'account-abstraction';
 import AppContext from '../AppContext';
 
 interface CreateWalletFieldProps {
@@ -52,12 +51,6 @@ export default function Page() {
       'public-key-5',
     ) as HTMLInputElement;
 
-    const blsGroupVerifier = new Contract(
-      BLSGroupVerifier.address,
-      BLSGroupVerifier.abi,
-      appContext?.aaProvider,
-    );
-
     const pubKeys = [
       pubKey1.value,
       pubKey2.value,
@@ -65,8 +58,14 @@ export default function Page() {
       pubKey4.value,
       pubKey5.value,
     ];
+    pubKeys;
 
-    const setupGroup = await blsGroupVerifier.setupGroup(pubKeys);
+    const blsGroupVerifier = await new BLSGroupVerifier__factory(
+      appContext?.hhSigner,
+    ).deploy();
+    await blsGroupVerifier.deployed();
+
+    const setupGroup = await blsGroupVerifier.setupGroup([]);
     await setupGroup.wait();
   };
 
