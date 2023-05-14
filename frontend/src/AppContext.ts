@@ -122,11 +122,16 @@ export default class AppContext {
   createPayment(
     simplePayment: Pick<Payment, 'to' | 'amount' | 'description'>,
   ): Payment {
+    if (this.walletAddress === undefined) {
+      alert('No wallet to send from');
+      throw new Error('No wallet to send from');
+    }
+
     return {
-      sender: this.address,
+      sender: this.walletAddress,
       nonce: '0x00', // TODO: nonce
       // token: TestToken.address, // TODO: token
-      token: '0x01',
+      token: '0x' + '01'.repeat(20),
       ...simplePayment,
     };
   }

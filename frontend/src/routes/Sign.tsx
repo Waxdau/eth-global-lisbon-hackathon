@@ -6,6 +6,7 @@ import AppContext from '../AppContext';
 import calculateSignaturesNeeded from '../utils/calculateSignaturesNeeded';
 import { IERC20__factory } from '../ERC20/IERC20__factory';
 import { AccountAPI } from '../account/AccountAPI';
+import assert from '../utils/assert';
 
 export default function Page() {
   const appContext = AppContext.use();
@@ -30,7 +31,6 @@ export default function Page() {
     if (!appContext || !payment || !id) return;
     const channel = new PaymentChannel(id);
     await appContext.addSignature(channel, payment);
-    window.location.reload();
   };
 
   const userSigned = publicKeys.find(
@@ -43,7 +43,7 @@ export default function Page() {
     const provider = appContext?.aaProvider;
     const signer = provider?.getSigner();
 
-    if (!id) return;
+    assert(id !== null);
     const channel = new PaymentChannel(id);
     const signedTx = await channel.getSignedPayment();
 
@@ -70,6 +70,7 @@ export default function Page() {
     );
 
   const sigsNeeded = calculateSignaturesNeeded(payment);
+  const sigsRemaining = sigsNeeded - publicKeys.length;
 
   return (
     <form>
@@ -95,7 +96,7 @@ export default function Page() {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         {userSigned && <div>You have already signed!</div>}
 
-        {sigsNeeded <= 1 && (
+        {!userSigned && sigsRemaining <= 1 && (
           <button
             type="submit"
             disabled={!!userSigned}
@@ -109,13 +110,14 @@ export default function Page() {
           </button>
         )}
 
-        {sigsNeeded > 1 && (
+        {!userSigned && sigsRemaining > 1 && (
           <button
             type="submit"
             disabled={!!userSigned}
             onClick={(e) => {
               e.preventDefault();
               addSignature();
+              window.location.reload();
             }}
             className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
           >
