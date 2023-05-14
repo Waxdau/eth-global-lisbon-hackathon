@@ -6,6 +6,8 @@ import {
   SafeAccountFactory__factory,
   EIP4337Manager,
   EIP4337Manager__factory,
+  EntryPoint,
+  EntryPoint__factory,
   UserOperationStruct,
 } from 'account-abstraction';
 
@@ -38,6 +40,7 @@ export interface AccountApiParams extends BaseApiParams {
 export class AccountAPI extends BaseAccountAPI {
   eip4337Manager: EIP4337Manager;
   safeAccountFactory: SafeAccountFactory;
+  entryPoint: EntryPoint;
   owner: Signer;
   index: BigNumberish;
 
@@ -52,6 +55,10 @@ export class AccountAPI extends BaseAccountAPI {
     this.owner = params.owner;
     this.index = BigNumber.from(params.index ?? 0);
 
+    this.entryPoint = EntryPoint__factory.connect(
+      params.entryPointAddress,
+      this.provider,
+    );
     this.eip4337Manager = EIP4337Manager__factory.connect(
       params.eip4337ManagerAddress,
       this.provider,
@@ -91,7 +98,7 @@ export class AccountAPI extends BaseAccountAPI {
       return BigNumber.from(0);
     }
     const accountContract = await this._getAccountContract();
-    return await accountContract.getNonce();
+    return this.entryPoint.getNonce(accountContract.address, this.index);
   }
 
   /**
