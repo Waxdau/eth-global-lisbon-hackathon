@@ -89,6 +89,8 @@ describe.only('Gnosis Proxy', function () {
     // await execTransaction(proxySafe.address, 0, enableModuleData, CALL, "enable module")
 
     // await (await proxySafe.enableModule(ecdsaVerifier.address, { from: ownerAddress })).wait()
+    // await (await manager.enableVerifier(ecdsaVerifier.address, 1))
+    // await (await proxySafe.enableVerifier(blsVerifier, 2))
 
     const counter_countCallData = counter.interface.encodeFunctionData('count')
     safe_execTxCallData = manager.interface.encodeFunctionData('executeAndRevert', [counter.address, 0, counter_countCallData, 0])

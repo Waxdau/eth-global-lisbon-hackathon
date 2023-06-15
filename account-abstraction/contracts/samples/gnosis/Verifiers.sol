@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./EIP4337Manager.sol";
 import "../bls/lib/IBLS.sol";
 
+import "../bls/BLSSignatureAggregator.sol";
+
 interface IVerifier {
     function verify(
         Safe safe,
@@ -19,6 +21,11 @@ interface IVerifier {
 contract ECDSAVerifier is IVerifier, SafeStorage {
 
     using ECDSA for bytes32;
+    BLSSignatureAggregator blsAgg;
+
+    constructor() {
+        blsAgg = new BLSSignatureAggregator();
+    }
 
     function verify(
         Safe safe,

@@ -15,7 +15,7 @@ import "../../interfaces/IEntryPoint.sol";
 import "../../utils/Exec.sol";
 import "hardhat/console.sol";
 import "./Verifiers.sol";
-    using ECDSA for bytes32;
+using ECDSA for bytes32;
 
 /**
  * Main EIP4337 module.
@@ -95,7 +95,11 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
     ) internal view returns (uint256 result) {
         uint8 verifierIndex = uint8(verificationData[0]);
         IVerifier verifier;
+
         verifier = ecdsaVerifier;
+        // IVerifier verifier = verifierFromIndex[verifierIndex]; // TODO address from bytes
+        // require(address(verifier) != address(0), "V: Unrecognised verifier");
+
         if (verifierIndex == 1) {
             verifier = ecdsaVerifier;
         }
@@ -109,7 +113,6 @@ contract EIP4337Manager is IAccount, SafeStorage, Executor {
 
         // verifier = verifierFromIndex[verifierIndex]; // TODO address from bytes
         console.log(address(verifier));
-
         // require(address(verifier) != address(0), "V: Unrecognised verifier");
 
         if (!verifier.verify(
